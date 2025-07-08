@@ -3,7 +3,7 @@
 client_id = "60ce8b60b01060a28f4c944056f0aabc"
 name = "video-app"
 handle = "video-app-15"
-application_url = "https://9d7e-85-114-207-110.ngrok-free.app"
+application_url = "https://ea56-188-163-81-61.ngrok-free.app"
 embedded = true
 
 [build]
@@ -26,7 +26,11 @@ api_version = "2025-07"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://9d7e-85-114-207-110.ngrok-free.app/auth/callback", "https://9d7e-85-114-207-110.ngrok-free.app/auth/shopify/callback", "https://9d7e-85-114-207-110.ngrok-free.app/api/auth/callback"]
+redirect_urls = [
+  "https://ea56-188-163-81-61.ngrok-free.app/auth/callback",
+  "https://ea56-188-163-81-61.ngrok-free.app/auth/shopify/callback",
+  "https://ea56-188-163-81-61.ngrok-free.app/api/auth/callback"
+]
 
 [pos]
 embedded = false
