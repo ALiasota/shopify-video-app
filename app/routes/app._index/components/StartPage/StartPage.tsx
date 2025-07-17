@@ -1,9 +1,13 @@
 import { TitleBar } from "@shopify/app-bridge-react";
 import { Banner, Layout, Page, Text, Button, Card, Image } from "@shopify/polaris";
 import createVideoImage from "../../../../assets/create-video.png";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./StartPage.scss";
 
 export default function StartPage() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const params = new URLSearchParams(location.search);
     return (
         <Page>
             <TitleBar title="Video Slider"></TitleBar>
@@ -33,7 +37,15 @@ export default function StartPage() {
                                 <Text alignment="center" as="p">
                                     Engage customers with dynamic video sliders that inspire and drive sales. Start by adding your first video slider!
                                 </Text>
-                                <Button variant="primary">Add video slider</Button>
+                                <Button
+                                    onClick={() => {
+                                        params.set("tab", "add-video");
+                                        navigate(`?${params.toString()}`, { replace: true });
+                                    }}
+                                    variant="primary"
+                                >
+                                    Add video slider
+                                </Button>
                             </div>
                         </div>
                     </Card>
