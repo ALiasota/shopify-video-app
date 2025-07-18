@@ -1,11 +1,12 @@
-import { BlockStack, Box, Button, ButtonGroup, Grid, Text } from "@shopify/polaris";
-
+import { BlockStack, Box, Button, ButtonGroup, Image, Grid, Text } from "@shopify/polaris";
 import VideoListFilter from "../VideoListFilter/VideoListFilter";
 import { useEffect, useState } from "react";
 import type { FilterOptionsType, VideoType } from "../types";
 import { SortedOptionsEnum, ViewTypeEnum } from "../types";
 import AddFromUrl from "../AddFromUrl/AddFromUrl";
-import { videos } from "./videos";
+import { videos } from "../videos";
+import searchImage from "../../../../assets/search.png";
+import GridList from "../GridList/GridList";
 
 const initFilterOptions = {
     queryValue: null,
@@ -88,24 +89,48 @@ export default function VideoList() {
     return (
         <Box padding="200" width="100%">
             <VideoListFilter setFilterOptions={setFilterOptions} />
-            <Grid columns={{ xs: 1, sm: 1, md: 1, lg: 1, xl: 1 }}>
-                <Grid.Cell>
-                    <Box paddingBlockEnd="1000" paddingBlockStart="1000" borderRadius="200" borderColor="border" borderWidth="025" background="bg-surface">
-                        <BlockStack gap="200" align="center" inlineAlign="center">
-                            <ButtonGroup>
-                                <Button>Upload new</Button>
-                                <AddFromUrl addUrl={(url: string) => console.log(url)} />
-                            </ButtonGroup>
-                            <Text as="p" variant="bodySm">
-                                Accepts .mp4, .mov and .webm
-                            </Text>
-                        </BlockStack>
-                    </Box>
-                </Grid.Cell>
-                {/* <Grid.Cell>
+            <Box paddingBlockStart="1000">
+                {filterVideos.length ? (
+                    <Grid columns={{ xs: 1, sm: 1, md: 1, lg: 1, xl: 1 }}>
+                        <Grid.Cell>
+                            <Box paddingBlockEnd="1000" paddingBlockStart="1000" borderRadius="200" borderColor="border" borderWidth="025" background="bg-surface">
+                                <BlockStack gap="200" align="center" inlineAlign="center">
+                                    <ButtonGroup>
+                                        <Button>Upload new</Button>
+                                        <AddFromUrl addUrl={(url: string) => console.log(url)} />
+                                    </ButtonGroup>
+                                    <Text as="p" variant="bodySm">
+                                        Accepts .mp4, .mov and .webm
+                                    </Text>
+                                </BlockStack>
+                            </Box>
+                            <Box paddingBlockStart="600">
+                                <GridList videos={filteredVideos} />
+                            </Box>
+                        </Grid.Cell>
+                        {/* <Grid.Cell>
                     <p>gfdgfdg</p>
                 </Grid.Cell> */}
-            </Grid>
+                    </Grid>
+                ) : (
+                    <BlockStack gap="400" align="center" inlineAlign="center">
+                        <Image source={searchImage} width="60px" alt="Search" />
+                        <Text variant="headingLg" as="h2">
+                            No videos yet
+                        </Text>
+                        <Box width="400px">
+                            <Text alignment="center" as="p">
+                                Edit your search criteria, or upload a new video
+                            </Text>
+                        </Box>
+
+                        <ButtonGroup>
+                            <Button variant="primary">Upload video</Button>
+                            <AddFromUrl addUrl={(url: string) => console.log(url)} />
+                        </ButtonGroup>
+                    </BlockStack>
+                )}
+            </Box>
         </Box>
     );
 }

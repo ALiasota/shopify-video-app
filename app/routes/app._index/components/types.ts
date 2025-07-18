@@ -25,7 +25,7 @@ export interface VideoType {
     id: string;
     thumbnailUrl: string;
     filename: string;
-    duration: string;
+    duration: number;
     format: string;
     size: number;
     createdAt: string;

@@ -3,7 +3,7 @@ import { Banner, Layout, Page, Text, Button, Card, EmptyState } from "@shopify/p
 import createVideoImage from "../../../../assets/create-video.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function StartPage() {
+export default function UploadNewPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const params = new URLSearchParams(location.search);
