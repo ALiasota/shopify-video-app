@@ -6,13 +6,18 @@ import { PlusIcon } from "@shopify/polaris-icons";
 interface GridListItemProps {
     video?: VideoType;
     moreVideosNumber?: number;
-    // updateChecked: (id: string) => void;
+    onClickShowAll: () => void;
+    onClickCheck: (id: string) => void;
+    checked: boolean;
 }
 
-export default function SliderVideoListItem({ video, moreVideosNumber }: GridListItemProps) {
+export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, checked }: GridListItemProps) {
     const [focused, setFocused] = useState(false);
-    const [checked, setChecked] = useState(false);
-    const handleCheck = useCallback((newChecked: boolean) => setChecked(newChecked), []);
+    const handleCheck = useCallback(() => {
+        if (video) {
+            onClickCheck(video.id);
+        }
+    }, [onClickCheck, video]);
 
     return (
         <Grid.Cell>
@@ -20,6 +25,9 @@ export default function SliderVideoListItem({ video, moreVideosNumber }: GridLis
                 <div
                     onMouseEnter={() => setFocused(true)}
                     onMouseLeave={() => setFocused(false)}
+                    onClick={() => {
+                        if (moreVideosNumber) onClickShowAll();
+                    }}
                     style={{
                         display: "flex",
                         justifyContent: "center",

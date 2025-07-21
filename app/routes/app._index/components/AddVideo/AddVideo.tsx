@@ -17,7 +17,7 @@ export default function AddVideo() {
         if (stage === "slider") {
             shopify.saveBar.show("slider-save-bar");
         }
-    }, [shopify.saveBar, stage]);
+    }, [stage]);
 
     return (
         <>
