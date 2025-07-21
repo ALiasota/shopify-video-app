@@ -12,6 +12,18 @@ export enum SortedOptionsEnum {
     SIZE_DESC = "size desc",
 }
 
+export enum SliderLayoutTypeEnum {
+    CAROUSEL = "carousel",
+    STACK = "stack",
+    SINGLE = "single",
+    THUMBNAILS = "thumbnails",
+}
+
+export enum PlacementTypeEnum {
+    HOME = "hone",
+    PRODUCT = "product",
+}
+
 export interface FilterOptionsType {
     queryValue: null | string;
     minSize: null | string;
@@ -30,4 +42,12 @@ export interface VideoType {
     size: number;
     createdAt: string;
     productIds: string[];
+}
+
+export interface SliderObjectType {
+    title: string;
+    layoutType: SliderLayoutTypeEnum;
+    placement: PlacementTypeEnum;
+    videosPerRow: string;
+    videos: string[];
 }

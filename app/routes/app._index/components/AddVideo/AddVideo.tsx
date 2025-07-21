@@ -4,14 +4,34 @@ import { Layout, Page, Text, Button, Card, Box, TextField, BlockStack, ButtonGro
 import { useEffect, useState } from "react";
 import SliderVideoList from "../SliderVideoList/SliderVideoList";
 import { videos } from "../videos";
+import VideoSliderLayoutSection from "../VideoSliderLayoutSection/VideoSliderLayoutSection";
+import type { SliderObjectType } from "../types";
+import { PlacementTypeEnum, SliderLayoutTypeEnum } from "../types";
+import VideoSliderPlacementSection from "../VideoSliderPlacementSection/VideoSliderPlacementSection";
+
+const initSliderOject = {
+    title: "",
+    layoutType: SliderLayoutTypeEnum.CAROUSEL,
+    placement: PlacementTypeEnum.HOME,
+    videosPerRow: "4",
+    videos: [],
+};
 
 export default function AddVideo() {
+    const [sliderObject, setSliderObject] = useState<SliderObjectType>(initSliderOject);
     const [title, setTitle] = useState("");
     const [stage, setStage] = useState<"start" | "slider">("start");
     const location = useLocation();
     const navigate = useNavigate();
     const shopify = useAppBridge();
     const params = new URLSearchParams(location.search);
+
+    function updateSliderField<K extends keyof SliderObjectType>(field: K, value: SliderObjectType[K]) {
+        setSliderObject((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+    }
 
     useEffect(() => {
         if (stage === "slider") {
@@ -83,9 +103,18 @@ export default function AddVideo() {
                             </BlockStack>
                         </Card>
                     </Layout.Section>
+                    {stage === "slider" && (
+                        <>
+                            <VideoSliderLayoutSection updateSliderField={updateSliderField} selectedOption={sliderObject.layoutType} videosPerRow={sliderObject.videosPerRow} />
+                            <VideoSliderPlacementSection updateSliderField={updateSliderField} selectedPlacement={sliderObject.placement} />
+                        </>
+                    )}
+
                     <Layout.Section>
                         <BlockStack gap="100" align="center" inlineAlign="end">
-                            <Button variant="primary">Save</Button>
+                            <Button disabled={stage === "start"} variant="primary">
+                                Save
+                            </Button>
                         </BlockStack>
                     </Layout.Section>
                 </Layout>
