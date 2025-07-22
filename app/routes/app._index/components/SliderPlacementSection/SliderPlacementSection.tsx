@@ -8,12 +8,12 @@ const placementOptions = [
     { label: "Product page", value: PlacementTypeEnum.PRODUCT },
 ];
 
-interface VideoSliderPlacementSectionProps {
+interface SliderPlacementSectionProps {
     selectedPlacement: PlacementTypeEnum;
     updateSliderField: <K extends keyof SliderObjectType>(field: K, value: SliderObjectType[K]) => void;
 }
 
-export default function VideoSliderPlacementSection({ selectedPlacement, updateSliderField }: VideoSliderPlacementSectionProps) {
+export default function SliderPlacementSection({ selectedPlacement, updateSliderField }: SliderPlacementSectionProps) {
     return (
         <Layout.Section>
             <Card>

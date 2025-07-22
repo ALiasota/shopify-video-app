@@ -36,6 +36,7 @@ export interface FilterOptionsType {
 export interface VideoType {
     id: string;
     thumbnailUrl: string;
+    videoUrl: string;
     filename: string;
     duration: number;
     format: string;

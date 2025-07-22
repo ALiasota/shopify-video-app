@@ -8,10 +8,11 @@ interface GridListItemProps {
     moreVideosNumber?: number;
     onClickShowAll: () => void;
     onClickCheck: (id: string) => void;
+    onClickPreview: (id: string) => void;
     checked: boolean;
 }
 
-export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, checked }: GridListItemProps) {
+export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, onClickPreview, checked }: GridListItemProps) {
     const [focused, setFocused] = useState(false);
     const handleCheck = useCallback(() => {
         if (video) {
@@ -26,7 +27,11 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                     onMouseEnter={() => setFocused(true)}
                     onMouseLeave={() => setFocused(false)}
                     onClick={() => {
-                        if (moreVideosNumber) onClickShowAll();
+                        if (moreVideosNumber) {
+                            onClickShowAll();
+                        } else if (video) {
+                            onClickPreview(video.id);
+                        }
                     }}
                     style={{
                         display: "flex",
@@ -65,9 +70,17 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                                         color: "white",
                                     }}
                                 >
-                                    <Text tone="inherit" as="span" fontWeight="bold">
-                                        {moreVideosNumber ? `+${moreVideosNumber}` : ""}
-                                    </Text>
+                                    {moreVideosNumber ? (
+                                        <Text tone="inherit" as="span" fontWeight="bold">
+                                            {moreVideosNumber}
+                                        </Text>
+                                    ) : (
+                                        <div style={{ position: "absolute", bottom: "8px", width: "90%", padding: "5px", backgroundColor: "#DCDCDC", borderRadius: "12px" }}>
+                                            <Text alignment="center" tone="base" variant="bodyMd" as="p">
+                                                {video.productIds.length + " product(s)"}
+                                            </Text>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                             {(checked || focused) && !moreVideosNumber ? (

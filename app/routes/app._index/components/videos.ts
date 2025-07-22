@@ -15,6 +15,7 @@ export const videos = [
     {
         id: "video-1",
         thumbnailUrl: "https://picsum.photos/id/1011/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "white-dress-1.mp4",
         duration: 7080,
         format: "MP4",
@@ -25,6 +26,7 @@ export const videos = [
     {
         id: "video-2",
         thumbnailUrl: "https://picsum.photos/id/1012/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "summer-look-2.mp4",
         duration: 7080,
         format: "MP4",
@@ -35,6 +37,7 @@ export const videos = [
     {
         id: "video-3",
         thumbnailUrl: "https://picsum.photos/id/1015/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "black-glam-3.mp4",
         duration: 7080,
         format: "MP4",
@@ -45,6 +48,7 @@ export const videos = [
     {
         id: "video-4",
         thumbnailUrl: "https://picsum.photos/id/1016/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "evening-style-4.mp4",
         duration: 7080,
         format: "MP4",
@@ -55,6 +59,7 @@ export const videos = [
     {
         id: "video-5",
         thumbnailUrl: "https://picsum.photos/id/1020/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "green-outfit-5.mp4",
         duration: 7080,
         format: "MP4",
@@ -65,6 +70,7 @@ export const videos = [
     {
         id: "video-6",
         thumbnailUrl: "https://picsum.photos/id/1024/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "classic-chic-6.mp4",
         duration: 7080,
         format: "MP4",
@@ -75,6 +81,7 @@ export const videos = [
     {
         id: "video-7",
         thumbnailUrl: "https://picsum.photos/id/1025/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "leopard-walk-7.mp4",
         duration: 7080,
         format: "MP4",
@@ -85,6 +92,7 @@ export const videos = [
     {
         id: "video-8",
         thumbnailUrl: "https://picsum.photos/id/1027/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "party-glitter-8.mp4",
         duration: 7080,
         format: "MP4",
@@ -95,6 +103,7 @@ export const videos = [
     {
         id: "video-9",
         thumbnailUrl: "https://picsum.photos/id/1028/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "midi-skirt-9.mp4",
         duration: 7080,
         format: "MP4",
@@ -105,6 +114,7 @@ export const videos = [
     {
         id: "video-10",
         thumbnailUrl: "https://picsum.photos/id/1033/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "fashion-show-10.mp4",
         duration: 7080,
         format: "MP4",
@@ -115,6 +125,7 @@ export const videos = [
     {
         id: "video-11",
         thumbnailUrl: "https://picsum.photos/id/1035/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "cocktail-11.mp4",
         duration: 7080,
         format: "MP4",
@@ -125,6 +136,7 @@ export const videos = [
     {
         id: "video-12",
         thumbnailUrl: "https://picsum.photos/id/1036/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "urban-mood-12.mp4",
         duration: 7080,
         format: "MP4",
@@ -135,6 +147,7 @@ export const videos = [
     {
         id: "video-13",
         thumbnailUrl: "https://picsum.photos/id/1042/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "street-trend-13.mp4",
         duration: 7080,
         format: "MP4",
@@ -145,6 +158,7 @@ export const videos = [
     {
         id: "video-14",
         thumbnailUrl: "https://picsum.photos/id/1043/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "red-glam-14.mp4",
         duration: 7080,
         format: "MP4",
@@ -155,6 +169,7 @@ export const videos = [
     {
         id: "video-15",
         thumbnailUrl: "https://picsum.photos/id/1044/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "vintage-moment-15.mp4",
         duration: 7080,
         format: "MP4",
@@ -165,6 +180,7 @@ export const videos = [
     {
         id: "video-16",
         thumbnailUrl: "https://picsum.photos/id/1045/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "casual-chic-16.mp4",
         duration: 7080,
         format: "MP4",
@@ -175,6 +191,7 @@ export const videos = [
     {
         id: "video-17",
         thumbnailUrl: "https://picsum.photos/id/1049/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "office-look-17.mp4",
         duration: 7080,
         format: "MP4",
@@ -185,6 +202,7 @@ export const videos = [
     {
         id: "video-18",
         thumbnailUrl: "https://picsum.photos/id/1050/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "date-night-18.mp4",
         duration: 7080,
         format: "MP4",
@@ -195,6 +213,7 @@ export const videos = [
     {
         id: "video-19",
         thumbnailUrl: "https://picsum.photos/id/1051/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "pastel-vibe-19.mp4",
         duration: 7080,
         format: "MP4",
@@ -205,6 +224,7 @@ export const videos = [
     {
         id: "video-20",
         thumbnailUrl: "https://picsum.photos/id/1052/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "spring-style-20.mp4",
         duration: 7080,
         format: "MP4",
@@ -215,6 +235,7 @@ export const videos = [
     {
         id: "video-21",
         thumbnailUrl: "https://picsum.photos/id/1053/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "holiday-dress-21.mp4",
         duration: 7080,
         format: "MP4",
@@ -225,6 +246,7 @@ export const videos = [
     {
         id: "video-22",
         thumbnailUrl: "https://picsum.photos/id/1054/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "boho-glam-22.mp4",
         duration: 7080,
         format: "MP4",
@@ -235,6 +257,7 @@ export const videos = [
     {
         id: "video-23",
         thumbnailUrl: "https://picsum.photos/id/1055/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "lace-touch-23.mp4",
         duration: 7080,
         format: "MP4",
@@ -245,6 +268,7 @@ export const videos = [
     {
         id: "video-24",
         thumbnailUrl: "https://picsum.photos/id/1056/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "pink-flair-24.mp4",
         duration: 7080,
         format: "MP4",
@@ -255,6 +279,7 @@ export const videos = [
     {
         id: "video-25",
         thumbnailUrl: "https://picsum.photos/id/1057/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "minimal-black-25.mp4",
         duration: 7080,
         format: "MP4",
@@ -265,6 +290,7 @@ export const videos = [
     {
         id: "video-26",
         thumbnailUrl: "https://picsum.photos/id/1058/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "retro-vibe-26.mp4",
         duration: 7080,
         format: "MP4",
@@ -275,6 +301,7 @@ export const videos = [
     {
         id: "video-27",
         thumbnailUrl: "https://picsum.photos/id/1059/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "autumn-leaf-27.mp4",
         duration: 7080,
         format: "MP4",
@@ -285,6 +312,7 @@ export const videos = [
     {
         id: "video-28",
         thumbnailUrl: "https://picsum.photos/id/1060/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "long-dress-28.mp4",
         duration: 7080,
         format: "MP4",
@@ -295,6 +323,7 @@ export const videos = [
     {
         id: "video-29",
         thumbnailUrl: "https://picsum.photos/id/1061/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "short-dress-29.mp4",
         duration: 7080,
         format: "MP4",
@@ -305,6 +334,7 @@ export const videos = [
     {
         id: "video-30",
         thumbnailUrl: "https://picsum.photos/id/1062/160/200",
+        videoUrl: "https://cdn.shopify.com/videos/c/vp/a9b8d40d71324f4483f494acf57fa76d/a9b8d40d71324f4483f494acf57fa76d.HD-720p-4.5Mbps-51429736.mp4",
         filename: "off-shoulder-30.mp4",
         duration: 7080,
         format: "MP4",

@@ -5,7 +5,7 @@ import singleImage from "../../../../assets/slider-layout/single.png";
 import stackImage from "../../../../assets/slider-layout/stack.png";
 import type { SliderObjectType } from "../types";
 import { SliderLayoutTypeEnum } from "../types";
-import VideoSliderLayoutItem from "../VideoSliderLayoutItem/VideoSliderLayoutItem";
+import SliderLayoutItem from "../SliderLayoutItem/SliderLayoutItem";
 import { ChevronDownIcon } from "@shopify/polaris-icons";
 
 const layoutOptions = [
@@ -44,13 +44,13 @@ const videosPerRowOptions = [
     { label: "6", value: "6" },
 ];
 
-interface VideoSliderLayoutSectionProps {
+interface SliderLayoutSectionProps {
     updateSliderField: <K extends keyof SliderObjectType>(field: K, value: SliderObjectType[K]) => void;
     selectedOption: SliderLayoutTypeEnum;
     videosPerRow: string;
 }
 
-export default function VideoSliderLayoutSection({ updateSliderField, selectedOption, videosPerRow }: VideoSliderLayoutSectionProps) {
+export default function SliderLayoutSection({ updateSliderField, selectedOption, videosPerRow }: SliderLayoutSectionProps) {
     return (
         <Layout.Section>
             <Box width="100%" background="bg-surface" borderRadius="400" borderColor="border-brand" borderWidth="050" padding="0">
@@ -64,7 +64,7 @@ export default function VideoSliderLayoutSection({ updateSliderField, selectedOp
                     <Box paddingInline="400">
                         <Grid columns={{ xs: 1, sm: 1, md: 4, lg: 4, xl: 4 }}>
                             {layoutOptions.map((option) => (
-                                <VideoSliderLayoutItem
+                                <SliderLayoutItem
                                     onOptionClick={(optionType: SliderLayoutTypeEnum) => updateSliderField("layoutType", optionType)}
                                     selectedOption={selectedOption}
                                     key={option.type}

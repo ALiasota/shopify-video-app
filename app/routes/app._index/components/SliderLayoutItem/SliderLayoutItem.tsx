@@ -2,7 +2,7 @@ import { BlockStack, Text, Box, Image, Grid, Tooltip } from "@shopify/polaris";
 import { useState } from "react";
 import { SliderLayoutTypeEnum } from "../types";
 
-interface VideoSliderLayoutItemProps {
+interface SliderLayoutItemProps {
     option: {
         title: string;
         type: SliderLayoutTypeEnum;
@@ -13,7 +13,7 @@ interface VideoSliderLayoutItemProps {
     selectedOption: SliderLayoutTypeEnum;
 }
 
-export default function VideoSliderLayoutItem({ option, onOptionClick, selectedOption }: VideoSliderLayoutItemProps) {
+export default function SliderLayoutItem({ option, onOptionClick, selectedOption }: SliderLayoutItemProps) {
     const [titleHover, setTitleHover] = useState(false);
 
     return (

@@ -2,6 +2,8 @@ import { BlockStack, Button, Checkbox, Grid, InlineStack } from "@shopify/polari
 import type { VideoType } from "../types";
 import SliderVideoListItem from "../SliderVideoListItem/SliderVideoListItem";
 import { useEffect, useState } from "react";
+import SliderPlayerModal from "../SliderPlayerModal/SliderPlayerModal";
+import { useAppBridge } from "@shopify/app-bridge-react";
 
 interface ListItem {
     video?: VideoType;
@@ -18,6 +20,9 @@ export default function SliderVideoList({ videos }: SliderVideoListProps) {
     const [checkedLength, setCheckedLength] = useState(0);
     const [showFullList, setShowFullList] = useState(false);
     const [listToDisplay, setListToDisplay] = useState<ListItem[]>([]);
+    const [previewId, setPreviewId] = useState<null | string>(null);
+
+    const shopify = useAppBridge();
 
     const onClickShowAll = () => {
         setShowFullList(true);
@@ -63,32 +68,40 @@ export default function SliderVideoList({ videos }: SliderVideoListProps) {
         setCheckedLength(allVideos.filter((video) => video.checked).length);
     }, [allVideos]);
 
+    useEffect(() => {
+        if (previewId) shopify.modal.show("slider-video-modal");
+    }, [previewId]);
+
     return (
-        <BlockStack gap="100">
-            {checkedLength ? (
-                <InlineStack align="space-between">
-                    <Checkbox
-                        label={`${checkedLength} video${checkedLength > 1 ? "s" : ""} selected`}
-                        checked={"indeterminate"}
-                        onChange={() => setAllVideos(allVideos.map((video) => ({ ...video, checked: false })))}
-                    />
-                    <Button onClick={OnClickRemove} variant="plain" tone="critical">
-                        Remove
-                    </Button>
-                </InlineStack>
-            ) : null}
-            <Grid columns={{ xs: 1, sm: 1, md: 6, lg: 6, xl: 6 }}>
-                {listToDisplay.map((item) => (
-                    <SliderVideoListItem
-                        key={item.video?.id || "0"}
-                        video={item.video}
-                        moreVideosNumber={item.moreVideosNumber}
-                        onClickShowAll={onClickShowAll}
-                        onClickCheck={onClickCheck}
-                        checked={item.checked}
-                    />
-                ))}
-            </Grid>
-        </BlockStack>
+        <>
+            <BlockStack gap="100">
+                {checkedLength ? (
+                    <InlineStack align="space-between">
+                        <Checkbox
+                            label={`${checkedLength} video${checkedLength > 1 ? "s" : ""} selected`}
+                            checked={"indeterminate"}
+                            onChange={() => setAllVideos(allVideos.map((video) => ({ ...video, checked: false })))}
+                        />
+                        <Button onClick={OnClickRemove} variant="plain" tone="critical">
+                            Remove
+                        </Button>
+                    </InlineStack>
+                ) : null}
+                <Grid columns={{ xs: 1, sm: 1, md: 6, lg: 6, xl: 6 }}>
+                    {listToDisplay.map((item) => (
+                        <SliderVideoListItem
+                            key={item.video?.id || "0"}
+                            video={item.video}
+                            moreVideosNumber={item.moreVideosNumber}
+                            onClickShowAll={onClickShowAll}
+                            onClickCheck={onClickCheck}
+                            onClickPreview={setPreviewId}
+                            checked={item.checked}
+                        />
+                    ))}
+                </Grid>
+            </BlockStack>
+            <SliderPlayerModal videos={videos} products={[]} previewId={previewId} />
+        </>
     );
 }

@@ -4,10 +4,10 @@ import { Layout, Page, Text, Button, Card, Box, TextField, BlockStack, ButtonGro
 import { useEffect, useState } from "react";
 import SliderVideoList from "../SliderVideoList/SliderVideoList";
 import { videos } from "../videos";
-import VideoSliderLayoutSection from "../VideoSliderLayoutSection/VideoSliderLayoutSection";
+import SliderLayoutSection from "../SliderLayoutSection/SliderLayoutSection";
 import type { SliderObjectType } from "../types";
 import { PlacementTypeEnum, SliderLayoutTypeEnum } from "../types";
-import VideoSliderPlacementSection from "../VideoSliderPlacementSection/VideoSliderPlacementSection";
+import SliderPlacementSection from "../SliderPlacementSection/SliderPlacementSection";
 
 const initSliderOject = {
     title: "",
@@ -105,8 +105,8 @@ export default function AddVideo() {
                     </Layout.Section>
                     {stage === "slider" && (
                         <>
-                            <VideoSliderLayoutSection updateSliderField={updateSliderField} selectedOption={sliderObject.layoutType} videosPerRow={sliderObject.videosPerRow} />
-                            <VideoSliderPlacementSection updateSliderField={updateSliderField} selectedPlacement={sliderObject.placement} />
+                            <SliderLayoutSection updateSliderField={updateSliderField} selectedOption={sliderObject.layoutType} videosPerRow={sliderObject.videosPerRow} />
+                            <SliderPlacementSection updateSliderField={updateSliderField} selectedPlacement={sliderObject.placement} />
                         </>
                     )}
 
