@@ -1,7 +1,11 @@
 import { Box, Checkbox, Grid, Image, Icon, Text } from "@shopify/polaris";
 import type { VideoType } from "../types";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { PlusIcon } from "@shopify/polaris-icons";
+import { useFetcher } from "@remix-run/react";
+import { useAppBridge } from "@shopify/app-bridge-react";
+
+const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"];
 
 interface GridListItemProps {
     video?: VideoType;
@@ -14,11 +18,66 @@ interface GridListItemProps {
 
 export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, onClickPreview, checked }: GridListItemProps) {
     const [focused, setFocused] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const fetcher = useFetcher();
+    const shopify = useAppBridge();
+    const uploading = fetcher.state !== "idle";
+
     const handleCheck = useCallback(() => {
         if (video) {
             onClickCheck(video.id);
         }
     }, [onClickCheck, video]);
+
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!allowedTypes.includes(file.type)) {
+            shopify.toast.show("Your video should be in mp4, webm, mov format");
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            shopify.toast.show("Video size should be lass than 10Mb");
+            return;
+        }
+
+        const url = URL.createObjectURL(file);
+        const video = document.createElement("video");
+
+        const checkResolution = () =>
+            new Promise<{ width: number; height: number }>((resolve, reject) => {
+                video.onloadedmetadata = () => {
+                    resolve({ width: video.videoWidth, height: video.videoHeight });
+                    URL.revokeObjectURL(url);
+                };
+                video.onerror = (err) => {
+                    reject(err);
+                    URL.revokeObjectURL(url);
+                };
+            });
+
+        video.src = url;
+        try {
+            const { width, height } = await checkResolution();
+            if (width > 720 || height > 480) {
+                shopify.toast.show("Video resolution is to hight");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("video", file);
+
+            fetcher.submit(formData, {
+                method: "post",
+                action: "/api/upload-video",
+                encType: "multipart/form-data",
+            });
+        } catch {
+            shopify.toast.show("Video upload error");
+        }
+    };
 
     return (
         <Grid.Cell>
@@ -31,6 +90,9 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                             onClickShowAll();
                         } else if (video) {
                             onClickPreview(video.id);
+                        } else if (fileInputRef.current) {
+                            fileInputRef.current.value = "";
+                            fileInputRef.current.click();
                         }
                     }}
                     style={{
@@ -90,7 +152,28 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                             ) : null}
                         </>
                     ) : (
-                        <Icon source={PlusIcon} />
+                        <>
+                            <Icon source={PlusIcon} />
+                            <input type="file" accept="video/*" style={{ display: "none" }} ref={fileInputRef} onChange={handleUpload} />
+                        </>
+                    )}
+                    {uploading && (
+                        <div
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                background: "rgba(255,255,255,0.8)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                zIndex: 10,
+                            }}
+                        >
+                            <Text as="span">Uploading...</Text>
+                        </div>
                     )}
                 </div>
             </Box>
