@@ -2,7 +2,7 @@ import type { AdminContext } from "@shopify/shopify-app-remix/server";
 import { logger } from "app/service/logger.server";
 import { FileContentType } from "app/types/admin.types";
 
-export async function uploadToShopifyFiles(graphql: AdminContext["admin"]["graphql"], file: File) {
+export async function uploadToShopifyVideo(graphql: AdminContext["admin"]["graphql"], file: File) {
     const prepareFiles = (files: { name: string | null; type: string | null; size: number | null }[]) =>
         files.map((file) => ({
             filename: file.name!,

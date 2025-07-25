@@ -1,11 +1,11 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { data } from "@remix-run/node";
 import { requireMerchantFromAdmin } from "app/service/require-merchant-from-admin";
-import { uploadToShopifyFiles } from "app/service/shopify/video/upload-to-shopify-files";
+import { uploadToShopifyVideo } from "app/service/shopify/video/upload-to-shopify-video";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const {
-        merchant,
+        // merchant,
         context: {
             admin: { graphql },
         },
@@ -18,6 +18,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         return data({ error: "No file uploaded" }, { status: 400 });
     }
 
-    const videoData = await uploadToShopifyFiles(graphql, file);
+    const videoData = await uploadToShopifyVideo(graphql, file);
     return data({ ok: true, videoData });
 };
