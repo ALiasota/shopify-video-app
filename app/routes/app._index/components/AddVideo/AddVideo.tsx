@@ -3,11 +3,12 @@ import { SaveBar, TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { Layout, Page, Text, Button, Card, Box, TextField, BlockStack, ButtonGroup } from "@shopify/polaris";
 import { useEffect, useState } from "react";
 import SliderVideoList from "../SliderVideoList/SliderVideoList";
-import { videos } from "../videos";
+
 import SliderLayoutSection from "../SliderLayoutSection/SliderLayoutSection";
 import type { SliderObjectType } from "../types";
 import { PlacementTypeEnum, SliderLayoutTypeEnum } from "../types";
 import SliderPlacementSection from "../SliderPlacementSection/SliderPlacementSection";
+import type { VideoDB } from "drizzle/schema.server";
 
 const initSliderOject = {
     title: "",
@@ -17,7 +18,12 @@ const initSliderOject = {
     videos: [],
 };
 
-export default function AddVideo() {
+interface AddVideoProps {
+    videos: Required<VideoDB>[];
+    currencyCode: string;
+}
+
+export default function AddVideo({ videos, currencyCode }: AddVideoProps) {
     const [sliderObject, setSliderObject] = useState<SliderObjectType>(initSliderOject);
     const [title, setTitle] = useState("");
     const [stage, setStage] = useState<"start" | "slider">("start");
@@ -98,7 +104,7 @@ export default function AddVideo() {
                                             </Text>
                                         </BlockStack>
                                     )}
-                                    {stage === "slider" && <SliderVideoList videos={videos} />}
+                                    {stage === "slider" && <SliderVideoList currencyCode={currencyCode} videos={videos} />}
                                 </Box>
                             </BlockStack>
                         </Card>

@@ -10,12 +10,20 @@ export async function getShopifyVideoById(graphql: AdminContext["admin"]["graphq
                     ... on Video {
                         id
                         alt
+                        filename
+                        duration
                         createdAt
                         fileStatus
                         fileErrors {
                             code
                             details
                             message
+                        }
+                        originalSource {
+                            fileSize
+                            format
+                            width
+                            height
                         }
                         sources {
                             format

@@ -1,14 +1,15 @@
 import { Box, Checkbox, Grid, Image, Icon, Text } from "@shopify/polaris";
-import type { VideoType } from "../types";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PlusIcon } from "@shopify/polaris-icons";
 import { useFetcher } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
+import type { VideoDB } from "drizzle/schema.server";
+import { FileStatus } from "app/types/admin.types";
 
 const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"];
 
 interface GridListItemProps {
-    video?: VideoType;
+    video?: Required<VideoDB>;
     moreVideosNumber?: number;
     onClickShowAll: () => void;
     onClickCheck: (id: string) => void;
@@ -18,10 +19,10 @@ interface GridListItemProps {
 
 export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, onClickPreview, checked }: GridListItemProps) {
     const [focused, setFocused] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const fetcher = useFetcher();
+    const fetcher = useFetcher<{ data: { ok?: boolean; video: VideoDB } }>();
     const shopify = useAppBridge();
-    const uploading = fetcher.state !== "idle";
 
     const handleCheck = useCallback(() => {
         if (video) {
@@ -66,6 +67,8 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                 return;
             }
 
+            setUploading(true);
+
             const formData = new FormData();
             formData.append("video", file);
 
@@ -78,6 +81,29 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
             shopify.toast.show("Video upload error");
         }
     };
+
+    useEffect(() => {
+        if (fetcher.data?.data && fetcher.data.data.ok && fetcher.data.data.video) {
+            if (fetcher.data.data.video.status === FileStatus.Ready) {
+                setUploading(false);
+            } else {
+                setTimeout(() => {
+                    fetcher.submit(
+                        { videoId: String(fetcher.data?.data.video.id) },
+                        {
+                            method: "post",
+                            action: `/app/get-video`,
+                            encType: "application/json",
+                        },
+                    );
+                }, 5000);
+            }
+        }
+        if (fetcher.data?.data && !fetcher.data?.data.ok) {
+            shopify.toast.show("Video upload error");
+            setUploading(false);
+        }
+    }, [fetcher.data]);
 
     return (
         <Grid.Cell>
@@ -112,7 +138,7 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                                     filter: moreVideosNumber ? "blur(4px)" : "none",
                                 }}
                             >
-                                <Image width="140px" height="140px" alt={video.filename} source={video.thumbnailUrl} />
+                                <Image width="140px" height="140px" alt={video.filename} source={video.thumbnailUrl!} />
                             </div>
                             {(focused || moreVideosNumber) && (
                                 <div
@@ -136,13 +162,7 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                                         <Text tone="inherit" as="span" fontWeight="bold">
                                             {moreVideosNumber}
                                         </Text>
-                                    ) : (
-                                        <div style={{ position: "absolute", bottom: "8px", width: "90%", padding: "5px", backgroundColor: "#DCDCDC", borderRadius: "12px" }}>
-                                            <Text alignment="center" tone="base" variant="bodyMd" as="p">
-                                                {video.productIds.length + " product(s)"}
-                                            </Text>
-                                        </div>
-                                    )}
+                                    ) : null}
                                 </div>
                             )}
                             {(checked || focused) && !moreVideosNumber ? (

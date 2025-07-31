@@ -1,22 +1,23 @@
 import { BlockStack, Button, Checkbox, Grid, InlineStack } from "@shopify/polaris";
-import type { VideoType } from "../types";
 import SliderVideoListItem from "../SliderVideoListItem/SliderVideoListItem";
 import { useEffect, useState } from "react";
-import SliderPlayerModal from "../SliderPlayerModal/SliderPlayerModal";
+import SliderPreviewVideo from "../SliderPreviewVideo/SliderPreviewVideo";
 import { useAppBridge } from "@shopify/app-bridge-react";
+import type { VideoDB } from "drizzle/schema.server";
 
 interface ListItem {
-    video?: VideoType;
+    video?: Required<VideoDB>;
     moreVideosNumber?: number;
     checked: boolean;
 }
 
 interface SliderVideoListProps {
-    videos: VideoType[];
+    videos: Required<VideoDB>[];
+    currencyCode: string;
 }
 
-export default function SliderVideoList({ videos }: SliderVideoListProps) {
-    const [allVideos, setAllVideos] = useState<{ video: VideoType; checked: boolean }[]>([]);
+export default function SliderVideoList({ videos, currencyCode }: SliderVideoListProps) {
+    const [allVideos, setAllVideos] = useState<{ video: Required<VideoDB>; checked: boolean }[]>([]);
     const [checkedLength, setCheckedLength] = useState(0);
     const [showFullList, setShowFullList] = useState(false);
     const [listToDisplay, setListToDisplay] = useState<ListItem[]>([]);
@@ -39,8 +40,16 @@ export default function SliderVideoList({ videos }: SliderVideoListProps) {
         );
     };
 
-    const OnClickRemove = () => {
+    const onClickRemove = () => {
         setAllVideos(allVideos.filter((video) => !video.checked));
+    };
+
+    const onClickPreview = (id: string) => {
+        if (id === previewId) {
+            setPreviewId(null);
+        } else {
+            setPreviewId(id);
+        }
     };
 
     useEffect(() => {
@@ -74,7 +83,7 @@ export default function SliderVideoList({ videos }: SliderVideoListProps) {
 
     return (
         <>
-            <BlockStack gap="100">
+            <BlockStack gap="200">
                 {checkedLength ? (
                     <InlineStack align="space-between">
                         <Checkbox
@@ -82,7 +91,7 @@ export default function SliderVideoList({ videos }: SliderVideoListProps) {
                             checked={"indeterminate"}
                             onChange={() => setAllVideos(allVideos.map((video) => ({ ...video, checked: false })))}
                         />
-                        <Button onClick={OnClickRemove} variant="plain" tone="critical">
+                        <Button onClick={onClickRemove} variant="plain" tone="critical">
                             Remove
                         </Button>
                     </InlineStack>
@@ -95,13 +104,13 @@ export default function SliderVideoList({ videos }: SliderVideoListProps) {
                             moreVideosNumber={item.moreVideosNumber}
                             onClickShowAll={onClickShowAll}
                             onClickCheck={onClickCheck}
-                            onClickPreview={setPreviewId}
+                            onClickPreview={onClickPreview}
                             checked={item.checked}
                         />
                     ))}
                 </Grid>
+                {previewId && <SliderPreviewVideo videos={videos} previewId={previewId} currencyCode={currencyCode} />}
             </BlockStack>
-            <SliderPlayerModal videos={videos} products={[]} previewId={previewId} />
         </>
     );
 }

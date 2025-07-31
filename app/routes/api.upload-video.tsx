@@ -1,11 +1,12 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { data } from "@remix-run/node";
+import { createVideo } from "app/repository/video/create-video";
 import { requireMerchantFromAdmin } from "app/service/require-merchant-from-admin";
 import { uploadToShopifyVideo } from "app/service/shopify/video/upload-to-shopify-video";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const {
-        // merchant,
+        merchant,
         context: {
             admin: { graphql },
         },
@@ -19,5 +20,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 
     const videoData = await uploadToShopifyVideo(graphql, file);
-    return data({ ok: true, videoData });
+
+    const video = await createVideo({
+        merchantId: merchant.id,
+        shopifyVideoId: videoData.id,
+        status: videoData.fileStatus,
+        filename: file.name,
+    });
+
+    return data({ ok: true, video });
 };

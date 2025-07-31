@@ -1,16 +1,18 @@
+import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { relations } from "drizzle-orm";
-import { boolean, integer, pgEnum, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, decimal, integer, pgEnum, pgTable, serial, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
-export const merchantTable = pgTable("merchant", {
+export const merchantsTable = pgTable("merchants", {
     id: serial("id").primaryKey(),
     shop: text("shop").notNull().unique(),
     shopId: text("shop_id").notNull(),
     email: text("email").notNull(),
+    currencyCode: text("currency_code").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }),
 });
 
-export const sessionTable = pgTable("session", {
+export const sessionsTable = pgTable("sessions", {
     id: text("id").primaryKey(),
     shop: text("shop").notNull(),
     state: text("state").notNull(),
@@ -19,28 +21,48 @@ export const sessionTable = pgTable("session", {
     accessToken: text("accessToken").notNull(),
 });
 
-export const videoTable = pgTable("video", {
-    id: text("id").primaryKey(),
+export const productsTable = pgTable("products", {
+    id: uuid("id").primaryKey().defaultRandom(),
     merchantId: integer("merchant_id")
-        .references(() => merchantTable.id, { onDelete: "cascade" })
+        .references(() => merchantsTable.id, { onDelete: "cascade" })
+        .notNull(),
+    shopifyProductId: text("shopify_product_id").notNull(),
+    title: text("title").notNull(),
+    thumbnailUrl: text("thumbnail_url"),
+    price: decimal("price"),
+    compareAtPrice: decimal("compare_at_price"),
+    handle: text("handle").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }),
+});
+
+export const videoStatusEnum = pgEnum("video_status", ["FAILED", "PROCESSING", "READY", "UPLOADED"]);
+
+export const videosTable = pgTable("videos", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    merchantId: integer("merchant_id")
+        .references(() => merchantsTable.id, { onDelete: "cascade" })
         .notNull(),
     shopifyVideoId: text("shopify_video_id").notNull(),
-    thumbnailUrl: text("thumbnail_url").notNull(),
-    videoUrl: text("video_url").notNull(),
+    thumbnailUrl: text("thumbnail_url"),
+    videoUrl: text("video_url"),
     filename: text("filename").notNull(),
-    duration: text("duration").notNull(),
-    format: text("format").notNull(),
-    size: text("size").notNull(),
+    duration: integer("duration"),
+    format: text("format"),
+    size: integer("size"),
+    width: integer("width"),
+    height: integer("height"),
+    status: videoStatusEnum("status").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }),
 });
 
 export const videoLayoutTypeEnum = pgEnum("video_layout_type", ["carousel", "stack", "single", "thumbnails"]);
 
-export const videoSliderTable = pgTable("video_slider", {
-    id: text("id").primaryKey(),
+export const slidersTable = pgTable("sliders", {
+    id: uuid("id").primaryKey().defaultRandom(),
     merchantId: integer("merchant_id")
-        .references(() => merchantTable.id, { onDelete: "cascade" })
+        .references(() => merchantsTable.id, { onDelete: "cascade" })
         .notNull(),
     title: text("title").notNull(),
     layout: videoLayoutTypeEnum("layout").notNull(),
@@ -48,49 +70,92 @@ export const videoSliderTable = pgTable("video_slider", {
     updatedAt: timestamp("updated_at", { mode: "date" }),
 });
 
-export const videoSliderItemTable = pgTable("video_slider_item", {
-    id: text("id").primaryKey(),
-    sliderId: integer("slider_id")
-        .references(() => videoSliderTable.id, { onDelete: "cascade" })
+export const slidesTable = pgTable("slides", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    sliderId: uuid("slider_id")
+        .references(() => slidersTable.id, { onDelete: "cascade" })
         .notNull(),
-    videoId: integer("video_id")
-        .references(() => videoTable.id, { onDelete: "cascade" })
+    videoId: uuid("video_id")
+        .references(() => videosTable.id, { onDelete: "cascade" })
         .notNull(),
-    shopifyVideoId: text("shopify_product_id").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }),
 });
 
-export const merchantTableRelations = relations(merchantTable, ({ many }) => ({
-    videos: many(videoTable),
-    sliders: many(videoSliderTable),
+export const productVariantsTable = pgTable("product_variants", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    productId: uuid("product_id")
+        .references(() => productsTable.id, { onDelete: "cascade" })
+        .notNull(),
+    slideId: uuid("slide_id")
+        .references(() => slidesTable.id, { onDelete: "cascade" })
+        .notNull(),
+    shopifyVariantId: text("shopify_product_id").notNull(),
+    title: text("title").notNull(),
+    price: decimal("price").notNull(),
+    compareAtPrice: decimal("compare_at_price"),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }),
+});
+
+export const merchantsTableRelations = relations(merchantsTable, ({ many }) => ({
+    videos: many(videosTable),
+    products: many(productsTable),
+    sliders: many(slidersTable),
 }));
 
-export const videoTableRelations = relations(videoTable, ({ one, many }) => ({
-    merchant: one(merchantTable, {
-        fields: [videoTable.merchantId],
-        references: [merchantTable.id],
+export const videosTableRelations = relations(videosTable, ({ one, many }) => ({
+    merchant: one(merchantsTable, {
+        fields: [videosTable.merchantId],
+        references: [merchantsTable.id],
     }),
-    sliderItems: many(videoSliderItemTable),
+    slides: many(slidesTable),
 }));
 
-export const videoSliderTableRelations = relations(videoSliderTable, ({ one, many }) => ({
-    merchant: one(merchantTable, {
-        fields: [videoSliderTable.merchantId],
-        references: [merchantTable.id],
+export const productsTableRelations = relations(productsTable, ({ one, many }) => ({
+    merchant: one(merchantsTable, {
+        fields: [productsTable.merchantId],
+        references: [merchantsTable.id],
     }),
-    sliderItems: many(videoSliderItemTable),
+    variants: many(productVariantsTable),
 }));
 
-export const videoSliderItemTableRelations = relations(videoSliderItemTable, ({ one }) => ({
-    slider: one(videoSliderTable, {
-        fields: [videoSliderItemTable.sliderId],
-        references: [videoSliderTable.id],
+export const slidersTableRelations = relations(slidersTable, ({ one, many }) => ({
+    merchant: one(merchantsTable, {
+        fields: [slidersTable.merchantId],
+        references: [merchantsTable.id],
     }),
-    video: one(videoTable, {
-        fields: [videoSliderItemTable.videoId],
-        references: [videoTable.id],
+    slides: many(slidesTable),
+}));
+
+export const slidesTableRelations = relations(slidesTable, ({ one }) => ({
+    slider: one(slidersTable, {
+        fields: [slidesTable.sliderId],
+        references: [slidersTable.id],
+    }),
+    video: one(videosTable, {
+        fields: [slidesTable.videoId],
+        references: [videosTable.id],
+    }),
+    variant: one(productVariantsTable, {
+        fields: [slidesTable.id],
+        references: [productVariantsTable.slideId],
     }),
 }));
 
-export type ShopifySessionTable = typeof sessionTable;
+export const productVariantsTableRelations = relations(productVariantsTable, ({ one }) => ({
+    product: one(productsTable, {
+        fields: [productVariantsTable.productId],
+        references: [productsTable.id],
+    }),
+    slide: one(slidesTable, {
+        fields: [productVariantsTable.slideId],
+        references: [slidesTable.id],
+    }),
+}));
+
+export type ShopifySessionTable = typeof sessionsTable;
+
+export type InsertVideo = InferInsertModel<typeof videosTable>;
+
+export type VideoDB = InferSelectModel<typeof videosTable>;

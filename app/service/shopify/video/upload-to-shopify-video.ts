@@ -1,6 +1,6 @@
 import type { AdminContext } from "@shopify/shopify-app-remix/server";
 import { logger } from "app/service/logger.server";
-import { FileContentType } from "app/types/admin.types";
+import { FileContentType, FileStatus } from "app/types/admin.types";
 
 export async function uploadToShopifyVideo(graphql: AdminContext["admin"]["graphql"], file: File) {
     const prepareFiles = (files: { name: string | null; type: string | null; size: number | null }[]) =>
@@ -109,7 +109,7 @@ export async function uploadToShopifyVideo(graphql: AdminContext["admin"]["graph
 
     const fileCreateJson = await fileCreateResponse.json();
 
-    if (fileCreateJson.data?.fileCreate?.userErrors || !fileCreateJson.data?.fileCreate?.files?.length) {
+    if (fileCreateJson.data?.fileCreate?.userErrors.length || !fileCreateJson.data?.fileCreate?.files?.length || fileCreateJson.data?.fileCreate?.files[0].fileStatus === FileStatus.Failed) {
         logger.error("Error adding video", {
             errors: fileCreateJson.data?.fileCreate?.userErrors,
         });

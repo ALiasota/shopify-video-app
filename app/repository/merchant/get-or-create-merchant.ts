@@ -4,12 +4,13 @@ import type { Session, shopifyApp } from "@shopify/shopify-app-remix/server";
 import { db } from "app/clients/db.server";
 import { getShopifyShopData } from "app/service/shopify/get-shopify-data";
 import { eq } from "drizzle-orm";
-import { merchantTable } from "drizzle/schema.server";
+import { merchantsTable } from "drizzle/schema.server";
 
 const createMerchant = async (session: Session, shopifyData: Awaited<ReturnType<typeof getShopifyShopData>>) => {
     const merchant = await db
-        .insert(merchantTable)
+        .insert(merchantsTable)
         .values({
+            currencyCode: shopifyData.shop.currencyCode,
             shop: session.shop,
             shopId: shopifyData.shop.id,
             email: shopifyData.shop.email,
@@ -20,8 +21,8 @@ const createMerchant = async (session: Session, shopifyData: Awaited<ReturnType<
 };
 
 export const getOrCreateMerchant = async ({ session, admin }: AfterAuthOptions) => {
-    const merchant = await db.query.merchantTable.findFirst({
-        where: eq(merchantTable.shop, session.shop),
+    const merchant = await db.query.merchantsTable.findFirst({
+        where: eq(merchantsTable.shop, session.shop),
     });
 
     if (merchant) {

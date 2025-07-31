@@ -2,7 +2,7 @@ import "@shopify/shopify-app-remix/adapters/node";
 import { ApiVersion, AppDistribution, shopifyApp } from "@shopify/shopify-app-remix/server";
 import { DrizzleSessionStoragePostgres } from "drizzle/DrizzleSessionStorage";
 import { db } from "./clients/db.server";
-import { sessionTable } from "drizzle/schema.server";
+import { sessionsTable } from "drizzle/schema.server";
 import { logger } from "./service/logger.server";
 import { getOrCreateMerchant, type AfterAuthOptions } from "./repository/merchant/get-or-create-merchant";
 
@@ -22,7 +22,7 @@ const shopify = shopifyApp({
     scopes: process.env.SCOPES?.split(","),
     appUrl: process.env.SHOPIFY_APP_URL || "",
     authPathPrefix: "/auth",
-    sessionStorage: new DrizzleSessionStoragePostgres(db, sessionTable),
+    sessionStorage: new DrizzleSessionStoragePostgres(db, sessionsTable),
     distribution: AppDistribution.AppStore,
     hooks: { afterAuth },
     future: {
