@@ -77,6 +77,7 @@ export default function SliderPreviewVideo({ videos, preview, currencyCode, save
 
         saveSlide({
             videoId: selectedVideo.id,
+            videoUrl: selectedVideo.videoUrl!,
             product: {
                 ...selectedProduct,
                 variant,

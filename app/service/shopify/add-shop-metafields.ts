@@ -53,7 +53,10 @@ export const addShopMetafields = async (graphql: AdminContext["admin"]["graphql"
     const metafieldData = {
         layoutType: slider.layoutType,
         videosPerRow: slider.videosPerRow,
-        slides: slider.slides.map((slide) => ({})),
+        slides: slider.slides.map((slide) => ({
+            videoUrl: slide.videoUrl,
+            productHandle: slide.product?.handle,
+        })),
     };
     return updateShopMetafield(graphql, shopId, metafieldData);
 };

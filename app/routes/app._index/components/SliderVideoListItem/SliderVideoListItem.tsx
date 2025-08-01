@@ -28,7 +28,7 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
 
     const handleCheck = useCallback(() => {
         if (video) {
-            onClickCheck({ videoId: video.id });
+            onClickCheck({ videoId: video.id, videoUrl: video.videoUrl! });
         }
     }, [onClickCheck, video]);
 

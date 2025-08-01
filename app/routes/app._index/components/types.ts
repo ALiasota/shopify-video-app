@@ -71,5 +71,6 @@ export interface SliderProductType {
 
 export interface SlideType {
     videoId: string;
+    videoUrl: string;
     product?: SliderProductType;
 }

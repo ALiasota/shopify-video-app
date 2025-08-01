@@ -57,7 +57,9 @@ export default function SliderVideoList({ videos, currencyCode, slides, updateSl
             setPreview(null);
         } else {
             const previewItem = slides.find((item) => item.videoId === id);
-            setPreview(previewItem || { videoId: id });
+            const videoUrl = videos.find((video) => video.id === id)?.videoUrl as string;
+
+            setPreview(previewItem || { videoId: id, videoUrl });
         }
     };
 
