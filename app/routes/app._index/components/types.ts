@@ -48,7 +48,28 @@ export interface VideoType {
 export interface SliderObjectType {
     title: string;
     layoutType: SliderLayoutTypeEnum;
-    placement: PlacementTypeEnum;
     videosPerRow: string;
-    videos: string[];
+    slides: SlideType[];
+}
+
+export interface SliderVariantType {
+    title: string;
+    price: string;
+    compareAtPrice: string | null;
+    shopifyVariantId: string;
+}
+
+export interface SliderProductType {
+    thumbnailUrl: string | null;
+    title: string;
+    shopifyProductId: string;
+    price?: string | null;
+    compareAtPrice?: string | null;
+    handle: string;
+    variant: SliderVariantType;
+}
+
+export interface SlideType {
+    videoId: string;
+    product?: SliderProductType;
 }

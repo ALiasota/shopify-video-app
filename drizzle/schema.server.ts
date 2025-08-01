@@ -159,3 +159,11 @@ export type ShopifySessionTable = typeof sessionsTable;
 export type InsertVideo = InferInsertModel<typeof videosTable>;
 
 export type VideoDB = InferSelectModel<typeof videosTable>;
+
+export type SliderDB = InferSelectModel<typeof slidersTable>;
+
+export type SlideDB = InferSelectModel<typeof slidesTable>;
+
+export type ProductDB = InferSelectModel<typeof productsTable>;
+
+export type ProductVariantDB = InferSelectModel<typeof productVariantsTable>;

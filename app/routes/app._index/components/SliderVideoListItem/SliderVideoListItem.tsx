@@ -5,6 +5,7 @@ import { useFetcher } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import type { VideoDB } from "drizzle/schema.server";
 import { FileStatus } from "app/types/admin.types";
+import type { SlideType } from "../types";
 
 const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"];
 
@@ -12,12 +13,13 @@ interface GridListItemProps {
     video?: Required<VideoDB>;
     moreVideosNumber?: number;
     onClickShowAll: () => void;
-    onClickCheck: (id: string) => void;
+    onClickCheck: (slide: SlideType) => void;
     onClickPreview: (id: string) => void;
     checked: boolean;
+    disableAdd: boolean;
 }
 
-export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, onClickPreview, checked }: GridListItemProps) {
+export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, onClickPreview, checked, disableAdd }: GridListItemProps) {
     const [focused, setFocused] = useState(false);
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -26,7 +28,7 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
 
     const handleCheck = useCallback(() => {
         if (video) {
-            onClickCheck(video.id);
+            onClickCheck({ videoId: video.id });
         }
     }, [onClickCheck, video]);
 
@@ -166,8 +168,8 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                                 </div>
                             )}
                             {(checked || focused) && !moreVideosNumber ? (
-                                <div style={{ position: "absolute", top: 0, width: "100%", padding: "5px", color: "white" }}>
-                                    <Checkbox checked={checked} onChange={handleCheck} label="" />
+                                <div onClick={(e) => e.stopPropagation()} style={{ position: "absolute", top: 0, width: "100%", padding: "5px", color: "white" }}>
+                                    <Checkbox disabled={disableAdd && !checked} checked={checked} onChange={handleCheck} label="" />
                                 </div>
                             ) : null}
                         </>

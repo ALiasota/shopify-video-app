@@ -36,7 +36,7 @@ export default function SliderPlacementSection({ selectedPlacement, updateSlider
                         <Select
                             options={placementOptions}
                             value={selectedPlacement}
-                            onChange={(value) => updateSliderField("placement", value as PlacementTypeEnum)}
+                            // onChange={(value) => updateSliderField("placement", value as PlacementTypeEnum)}
                             label={"Select where the video slider will be displayed"}
                         />
                     </Box>

@@ -1,5 +1,4 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { authenticate } from "../../shopify.server";
 import StartPage from "./components/StartPage/StartPage";
 import { data, useLoaderData, useLocation } from "@remix-run/react";
 import AddVideo from "./components/AddVideo/AddVideo";
@@ -7,6 +6,9 @@ import SelectVideoPage from "./components/SelectVideoPage/SelectVideoPage";
 import { getAllUploadedMerchantVideos } from "app/repository/video/get-all-uploaded-merchant-videos";
 import { requireMerchantFromAdmin } from "app/service/require-merchant-from-admin";
 import type { VideoDB } from "drizzle/schema.server";
+import type { SliderObjectType } from "./components/types";
+import { createSlider } from "app/repository/slider/create-slider";
+import { addShopMetafields } from "app/service/shopify/add-shop-metafields";
 
 const TAB_ITEMS = ["start-page", "add-video"];
 
@@ -19,11 +21,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const { admin } = await authenticate.admin(request);
+    const {
+        merchant,
+        context: {
+            admin: { graphql },
+        },
+    } = await requireMerchantFromAdmin(request);
+    const sliderData = await request.json();
+    const slider: SliderObjectType = { ...sliderData, slides: JSON.parse(sliderData.slides) };
 
-    return {
-        admin,
-    };
+    const sliderId = await createSlider(slider, merchant.id);
+
+    await addShopMetafields(graphql, merchant.shopId, slider);
+
+    return data({ ok: true, sliderId });
 };
 
 export default function Index() {
@@ -37,7 +48,7 @@ export default function Index() {
     return (
         <>
             {currentTab === "start-page" && <StartPage />}
-            {currentTab === "add-video" && <AddVideo currencyCode={data.currencyCode} videos={data.videos as unknown as Required<VideoDB>[]} />}
+            {currentTab === "add-video" && <AddVideo currencyCode={data.currencyCode} videos={data.videos as unknown as VideoDB[]} />}
             {currentTab === "select-video" && <SelectVideoPage />}
         </>
     );

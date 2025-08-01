@@ -6,17 +6,21 @@ import type { VideoDB } from "drizzle/schema.server";
 import { formatDateToStr } from "app/utils/formatDateToStr";
 import type { Product } from "@shopify/app-bridge/actions/ResourcePicker";
 import getSymbolFromCurrency from "currency-symbol-map";
+import type { SliderProductType, SliderVariantType, SlideType } from "../types";
 
 interface SliderPreviewVideoProps {
-    videos: Required<VideoDB>[];
-    previewId: string;
+    videos: VideoDB[];
+    preview: SlideType;
     currencyCode: string;
+    saveSlide: (slide: SlideType) => void;
+    disableAdd: boolean;
 }
 
-export default function SliderPreviewVideo({ videos, previewId, currencyCode }: SliderPreviewVideoProps) {
-    const [selectedVideo, setSelectedVideo] = useState<null | Required<VideoDB>>(null);
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [variantsList, setVariantsList] = useState<{ label: string; value: string }[]>([]);
+export default function SliderPreviewVideo({ videos, preview, currencyCode, saveSlide, disableAdd }: SliderPreviewVideoProps) {
+    const [selectedVideo, setSelectedVideo] = useState<null | VideoDB>(null);
+    const [selectedProduct, setSelectedProduct] = useState<Omit<SliderProductType, "variant"> | null>(null);
+    const [variants, setVariants] = useState<SliderVariantType[]>([]);
+    const [variantsChoiceList, setVariantsChoiceList] = useState<{ label: string; value: string }[]>([]);
     const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
     const currencySymbol = getSymbolFromCurrency(currencyCode);
 
@@ -31,31 +35,80 @@ export default function SliderPreviewVideo({ videos, previewId, currencyCode }: 
                 filter: {
                     variants: false,
                 },
+                selectionIds: preview.product?.shopifyProductId ? [{ id: preview.product?.shopifyProductId }] : undefined,
             })
-            .then((selected: any) => setSelectedProduct(selected[0]));
+            .then((selected: any) => {
+                const prod: Product = selected[0];
+
+                if (!prod) return;
+
+                const variantList = prod.variants.map((variant) => ({
+                    title: variant.displayName!,
+                    price: variant.price!,
+                    compareAtPrice: variant.compareAtPrice!,
+                    shopifyVariantId: variant.id!,
+                }));
+
+                const variantItems = variantList.map((variant) => ({
+                    label: variant.title + " - " + variant.price + " " + currencySymbol,
+                    value: variant.shopifyVariantId,
+                }));
+
+                setSelectedProduct({
+                    title: prod.title,
+                    shopifyProductId: prod.id,
+                    handle: prod.handle,
+                    thumbnailUrl: prod.images[0]?.originalSrc,
+                });
+                setVariants(variantList);
+                setVariantsChoiceList(variantItems);
+                setSelectedVariant(variantItems[0]?.value);
+            });
     };
 
     const handleChangeVariant = useCallback((value: string[]) => setSelectedVariant(value[0]), []);
 
+    const onClickSave = () => {
+        if (!selectedVideo || !selectedProduct || !selectedVariant) return;
+
+        const variant = variants.find((v) => v.shopifyVariantId === selectedVariant);
+
+        if (!variant) return;
+
+        saveSlide({
+            videoId: selectedVideo.id,
+            product: {
+                ...selectedProduct,
+                variant,
+            },
+        });
+    };
+
     useEffect(() => {
-        const video = videos.find((video) => video.id === previewId);
+        const video = videos.find((video) => video.id === preview.videoId);
 
         if (video) {
             setSelectedVideo(video);
         }
-    }, [previewId, videos]);
 
-    useEffect(() => {
-        if (!selectedProduct) return;
-
-        const variantItems = selectedProduct.variants.map((variant) => ({
-            label: variant.displayName + " - " + variant.price + " " + currencySymbol,
-            value: variant.id!,
-        }));
-
-        setVariantsList(variantItems);
-        setSelectedVariant(selectedProduct.variants[0].id!);
-    }, [currencySymbol, selectedProduct]);
+        if (preview.product) {
+            const { variant, ...prod } = preview.product;
+            setSelectedProduct(prod);
+            setVariants([variant]);
+            setVariantsChoiceList([
+                {
+                    label: variant.title + " - " + variant.price + " " + currencySymbol,
+                    value: variant.shopifyVariantId,
+                },
+            ]);
+            setSelectedVariant(variant.shopifyVariantId);
+        } else {
+            setSelectedProduct(null);
+            setVariants([]);
+            setVariantsChoiceList([]);
+            setSelectedVariant(null);
+        }
+    }, [currencySymbol, preview, videos]);
 
     return (
         <>
@@ -119,7 +172,18 @@ export default function SliderPreviewVideo({ videos, previewId, currencyCode }: 
                                                 <Text as="h2" variant="headingMd" alignment="center">
                                                     {selectedProduct.title}
                                                 </Text>
-                                                <ChoiceList title="Select Variant" choices={variantsList} selected={[selectedVariant!]} onChange={handleChangeVariant} />
+                                                {variantsChoiceList.length > 1 ? (
+                                                    <ChoiceList title="Select Variant" choices={variantsChoiceList} selected={[selectedVariant!]} onChange={handleChangeVariant} />
+                                                ) : (
+                                                    <BlockStack gap="200" align="center">
+                                                        <Text as="h2" variant="headingMd" alignment="center">
+                                                            Variant
+                                                        </Text>
+                                                        <Text as="p" variant="bodySm" alignment="center">
+                                                            {variantsChoiceList[0].label}
+                                                        </Text>
+                                                    </BlockStack>
+                                                )}
                                             </BlockStack>
                                         ) : (
                                             <BlockStack gap="200" align="center">
@@ -134,7 +198,9 @@ export default function SliderPreviewVideo({ videos, previewId, currencyCode }: 
                                     </BlockStack>
                                 </Box>
                                 <BlockStack gap="100" align="center" inlineAlign="end">
-                                    <Button variant="primary">Save</Button>
+                                    <Button disabled={!selectedVariant || selectedVariant === preview.videoId || disableAdd} onClick={onClickSave} variant="primary">
+                                        Save
+                                    </Button>
                                 </BlockStack>
                             </BlockStack>
                         </Box>

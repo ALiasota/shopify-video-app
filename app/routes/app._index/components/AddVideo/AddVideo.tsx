@@ -1,43 +1,61 @@
-import { useLocation, useNavigate } from "@remix-run/react";
+import { useLocation, useNavigate, useFetcher } from "@remix-run/react";
 import { SaveBar, TitleBar, useAppBridge } from "@shopify/app-bridge-react";
-import { Layout, Page, Text, Button, Card, Box, TextField, BlockStack, ButtonGroup } from "@shopify/polaris";
+import { Layout, Page, Text, Button, Card, Box, TextField, BlockStack, ButtonGroup, Banner } from "@shopify/polaris";
 import { useEffect, useState } from "react";
 import SliderVideoList from "../SliderVideoList/SliderVideoList";
 
 import SliderLayoutSection from "../SliderLayoutSection/SliderLayoutSection";
 import type { SliderObjectType } from "../types";
-import { PlacementTypeEnum, SliderLayoutTypeEnum } from "../types";
-import SliderPlacementSection from "../SliderPlacementSection/SliderPlacementSection";
+import { SliderLayoutTypeEnum } from "../types";
 import type { VideoDB } from "drizzle/schema.server";
+import { AlertCircleIcon } from "@shopify/polaris-icons";
+
+const maxSlidesCount = 6;
+const minSlidesCount = 4;
 
 const initSliderOject = {
     title: "",
     layoutType: SliderLayoutTypeEnum.CAROUSEL,
-    placement: PlacementTypeEnum.HOME,
     videosPerRow: "4",
-    videos: [],
+    slides: [],
 };
 
 interface AddVideoProps {
-    videos: Required<VideoDB>[];
+    videos: VideoDB[];
     currencyCode: string;
 }
 
 export default function AddVideo({ videos, currencyCode }: AddVideoProps) {
     const [sliderObject, setSliderObject] = useState<SliderObjectType>(initSliderOject);
-    const [title, setTitle] = useState("");
     const [stage, setStage] = useState<"start" | "slider">("start");
+    const [disabled, setDisabled] = useState(true);
+
     const location = useLocation();
     const navigate = useNavigate();
     const shopify = useAppBridge();
     const params = new URLSearchParams(location.search);
+    const fetcher = useFetcher();
 
-    function updateSliderField<K extends keyof SliderObjectType>(field: K, value: SliderObjectType[K]) {
+    const updateSliderField = <K extends keyof SliderObjectType>(field: K, value: SliderObjectType[K]) => {
         setSliderObject((prev) => ({
             ...prev,
             [field]: value,
         }));
-    }
+    };
+
+    const onClickSave = () => {
+        const payload = {
+            title: sliderObject.title,
+            layoutType: sliderObject.layoutType,
+            videosPerRow: sliderObject.videosPerRow,
+            slides: JSON.stringify(sliderObject.slides),
+        };
+
+        fetcher.submit(payload, {
+            method: "POST",
+            encType: "application/json",
+        });
+    };
 
     useEffect(() => {
         if (stage === "slider") {
@@ -45,10 +63,17 @@ export default function AddVideo({ videos, currencyCode }: AddVideoProps) {
         }
     }, [stage]);
 
+    useEffect(() => {
+        if (!sliderObject.title.length || sliderObject.slides.length < minSlidesCount) setDisabled(true);
+        else {
+            setDisabled(false);
+        }
+    }, [sliderObject]);
+
     return (
         <>
             <SaveBar id="slider-save-bar">
-                <button variant="primary" onClick={() => shopify.saveBar.hide("slider-save-bar")}></button>
+                <button variant="primary" disabled={disabled} onClick={onClickSave}></button>
                 <button
                     onClick={() => {
                         params.set("tab", "start-page");
@@ -64,8 +89,25 @@ export default function AddVideo({ videos, currencyCode }: AddVideoProps) {
                     <Layout.Section>
                         <Card>
                             <Box paddingBlockEnd="200">
-                                <TextField label="Title" value={title} onChange={setTitle} autoComplete="off" helpText="Helps you identify video slider, not visible to your customers" />
+                                <TextField
+                                    label="Title"
+                                    value={sliderObject.title}
+                                    onChange={(value: string) => updateSliderField("title", value)}
+                                    autoComplete="off"
+                                    helpText="Helps you identify video slider, not visible to your customers"
+                                />
                             </Box>
+                            {(sliderObject.slides.length < minSlidesCount || sliderObject.slides.length >= maxSlidesCount) && (
+                                <Banner tone="warning" icon={AlertCircleIcon}>
+                                    <BlockStack gap="200">
+                                        <Text as="span" variant="bodyMd">
+                                            {sliderObject.slides.length >= maxSlidesCount
+                                                ? "You have reached the maximum limit of slides"
+                                                : `You need to add between ${minSlidesCount} and ${maxSlidesCount} slides.`}
+                                        </Text>
+                                    </BlockStack>
+                                </Banner>
+                            )}
                             <BlockStack gap="100" align="center">
                                 <Text variant="bodyMd" as="p">
                                     Videos
@@ -104,7 +146,16 @@ export default function AddVideo({ videos, currencyCode }: AddVideoProps) {
                                             </Text>
                                         </BlockStack>
                                     )}
-                                    {stage === "slider" && <SliderVideoList currencyCode={currencyCode} videos={videos} />}
+                                    {stage === "slider" && (
+                                        <SliderVideoList
+                                            currencyCode={currencyCode}
+                                            videos={videos}
+                                            slides={sliderObject.slides}
+                                            updateSliderField={updateSliderField}
+                                            maxSlidesCount={maxSlidesCount}
+                                            minSlidesCount={minSlidesCount}
+                                        />
+                                    )}
                                 </Box>
                             </BlockStack>
                         </Card>
@@ -112,13 +163,13 @@ export default function AddVideo({ videos, currencyCode }: AddVideoProps) {
                     {stage === "slider" && (
                         <>
                             <SliderLayoutSection updateSliderField={updateSliderField} selectedOption={sliderObject.layoutType} videosPerRow={sliderObject.videosPerRow} />
-                            <SliderPlacementSection updateSliderField={updateSliderField} selectedPlacement={sliderObject.placement} />
+                            {/* <SliderPlacementSection updateSliderField={updateSliderField} selectedPlacement={sliderObject.placement} /> */}
                         </>
                     )}
 
                     <Layout.Section>
                         <BlockStack gap="100" align="center" inlineAlign="end">
-                            <Button disabled={stage === "start"} variant="primary">
+                            <Button disabled={disabled} onClick={onClickSave} variant="primary">
                                 Save
                             </Button>
                         </BlockStack>
