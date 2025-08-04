@@ -1,7 +1,18 @@
 import type { AdminContext } from "@shopify/shopify-app-remix/server";
-import type { SliderObjectType } from "app/routes/app._index/components/types";
+import { logger } from "../logger.server";
+import type { SliderLayoutTypeEnum, SliderPlacementTypeEnum } from "app/routes/app._index/components/types";
 
-const updateShopMetafield = async (graphql: AdminContext["admin"]["graphql"], shopId: string, metafieldData: any) => {
+export interface MetafieldSlider {
+    layout: SliderLayoutTypeEnum;
+    placement: SliderPlacementTypeEnum;
+    videosPerRow: string;
+    slides: {
+        videoUrl: string;
+        productHandle?: string;
+    }[];
+}
+
+export const updateShopMetafield = async (graphql: AdminContext["admin"]["graphql"], shopId: string, metafieldData: MetafieldSlider[]) => {
     const metafieldInput = {
         namespace: "custom",
         key: "grodas_slider",
@@ -40,23 +51,12 @@ const updateShopMetafield = async (graphql: AdminContext["admin"]["graphql"], sh
 
         const errors = data?.data?.metafieldsSet?.userErrors;
         if (errors?.length) {
+            logger.error("Shopify Metafield Error:", { errors });
             throw new Error(errors.map((e: any) => e.message).join(", "));
         }
         return data?.data?.metafieldsSet?.metafields?.[0] ?? false;
     } catch (error) {
-        console.error("Shopify Metafield Error:", error);
+        logger.error("Shopify Metafield Error:", { error });
         throw new Response(JSON.stringify({ error: error }), { status: 500 });
     }
-};
-
-export const addShopMetafields = async (graphql: AdminContext["admin"]["graphql"], shopId: string, slider: SliderObjectType) => {
-    const metafieldData = {
-        layoutType: slider.layoutType,
-        videosPerRow: slider.videosPerRow,
-        slides: slider.slides.map((slide) => ({
-            videoUrl: slide.videoUrl,
-            productHandle: slide.product?.handle,
-        })),
-    };
-    return updateShopMetafield(graphql, shopId, metafieldData);
 };

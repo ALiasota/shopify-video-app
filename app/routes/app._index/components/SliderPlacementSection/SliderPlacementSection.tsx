@@ -1,15 +1,16 @@
 import { BlockStack, Card, Box, Banner, Button, Select, Text, Layout } from "@shopify/polaris";
 import { AlertCircleIcon } from "@shopify/polaris-icons";
 import type { SliderObjectType } from "../types";
-import { PlacementTypeEnum } from "../types";
+import { SliderPlacementTypeEnum } from "../types";
 
 const placementOptions = [
-    { label: "Home page", value: PlacementTypeEnum.HOME },
-    { label: "Product page", value: PlacementTypeEnum.PRODUCT },
+    { label: "Home page", value: SliderPlacementTypeEnum.HOME },
+    { label: "Product page", value: SliderPlacementTypeEnum.PRODUCT },
+    { label: "Collection page", value: SliderPlacementTypeEnum.COLLECTION },
 ];
 
 interface SliderPlacementSectionProps {
-    selectedPlacement: PlacementTypeEnum;
+    selectedPlacement: SliderPlacementTypeEnum;
     updateSliderField: <K extends keyof SliderObjectType>(field: K, value: SliderObjectType[K]) => void;
 }
 
@@ -36,7 +37,7 @@ export default function SliderPlacementSection({ selectedPlacement, updateSlider
                         <Select
                             options={placementOptions}
                             value={selectedPlacement}
-                            // onChange={(value) => updateSliderField("placement", value as PlacementTypeEnum)}
+                            onChange={(value) => updateSliderField("placement", value as SliderPlacementTypeEnum)}
                             label={"Select where the video slider will be displayed"}
                         />
                     </Box>

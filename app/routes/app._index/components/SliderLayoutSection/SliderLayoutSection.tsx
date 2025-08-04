@@ -65,7 +65,7 @@ export default function SliderLayoutSection({ updateSliderField, selectedOption,
                         <Grid columns={{ xs: 1, sm: 1, md: 4, lg: 4, xl: 4 }}>
                             {layoutOptions.map((option) => (
                                 <SliderLayoutItem
-                                    onOptionClick={(optionType: SliderLayoutTypeEnum) => updateSliderField("layoutType", optionType)}
+                                    onOptionClick={(optionType: SliderLayoutTypeEnum) => updateSliderField("layout", optionType)}
                                     selectedOption={selectedOption}
                                     key={option.type}
                                     option={option}

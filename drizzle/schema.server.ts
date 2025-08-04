@@ -57,15 +57,21 @@ export const videosTable = pgTable("videos", {
     updatedAt: timestamp("updated_at", { mode: "date" }),
 });
 
-export const videoLayoutTypeEnum = pgEnum("video_layout_type", ["carousel", "stack", "single", "thumbnails"]);
+export const sliderLayoutTypeEnum = pgEnum("slider_layout_type", ["carousel", "stack", "single", "thumbnails"]);
+export const sliderStatusEnum = pgEnum("slider_status", ["active", "draft"]);
+export const sliderPlacementTypeEnum = pgEnum("slider_placement_type", ["hone", "product", "collection"]);
 
 export const slidersTable = pgTable("sliders", {
     id: uuid("id").primaryKey().defaultRandom(),
     merchantId: integer("merchant_id")
         .references(() => merchantsTable.id, { onDelete: "cascade" })
         .notNull(),
+    status: sliderStatusEnum("status").notNull(),
     title: text("title").notNull(),
-    layout: videoLayoutTypeEnum("layout").notNull(),
+    handle: text("handle").notNull(),
+    layout: sliderLayoutTypeEnum("layout").notNull(),
+    placement: sliderPlacementTypeEnum("placement").notNull(),
+    videosPerRow: decimal("videos_per_row").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }),
 });

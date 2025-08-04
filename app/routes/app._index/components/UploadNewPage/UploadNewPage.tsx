@@ -32,7 +32,7 @@ export default function UploadNewPage() {
                             action={{
                                 content: "Add video slider",
                                 onAction: () => {
-                                    params.set("tab", "add-video");
+                                    params.set("tab", "add-slider");
                                     navigate(`?${params.toString()}`, { replace: true });
                                 },
                             }}

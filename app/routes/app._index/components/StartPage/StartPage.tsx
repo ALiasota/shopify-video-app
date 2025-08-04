@@ -32,7 +32,7 @@ export default function StartPage() {
                             action={{
                                 content: "Add video slider",
                                 onAction: () => {
-                                    params.set("tab", "add-video");
+                                    params.set("tab", "add-slider");
                                     navigate(`?${params.toString()}`, { replace: true });
                                 },
                             }}

@@ -19,22 +19,26 @@ export const createSlider = async (sliderObject: SliderObjectType, merchantId: n
     const shopifyProductIds = products.map((prod) => prod.shopifyProductId);
 
     return await db.transaction(async (tx) => {
-        const sliderId = (
+        const slider = (
             await tx
                 .insert(slidersTable)
                 .values({
                     merchantId,
                     title: sliderObject.title,
-                    layout: sliderObject.layoutType,
+                    handle: sliderObject.handle,
+                    status: sliderObject.status,
+                    placement: sliderObject.placement,
+                    layout: sliderObject.layout,
+                    videosPerRow: sliderObject.videosPerRow,
                 })
-                .returning({ id: slidersTable.id })
-        )[0].id;
+                .returning()
+        )[0];
 
         const insertedSlides = await tx
             .insert(slidesTable)
             .values(
                 sliderObject.slides.map((slide) => ({
-                    sliderId,
+                    sliderId: slider.id,
                     videoId: slide.videoId,
                 })),
             )
@@ -47,7 +51,7 @@ export const createSlider = async (sliderObject: SliderObjectType, merchantId: n
 
         products = products.filter((prod) => !productsDb.some((prodDb) => prodDb.shopifyProductId === prod.shopifyProductId));
 
-        const insertedProducts = await tx.insert(productsTable).values(products).returning({ id: productsTable.id, shopifyProductId: productsTable.shopifyProductId });
+        const insertedProducts = products.length ? await tx.insert(productsTable).values(products).returning({ id: productsTable.id, shopifyProductId: productsTable.shopifyProductId }) : [];
 
         const prodIds = [...productsDb, ...insertedProducts];
 
@@ -73,8 +77,10 @@ export const createSlider = async (sliderObject: SliderObjectType, merchantId: n
             return { ...variantData, productId: prod.id, slideId: slide.id };
         });
 
-        await tx.insert(productVariantsTable).values(variantsToInsert);
+        if (variantsToInsert.length) {
+            await tx.insert(productVariantsTable).values(variantsToInsert);
+        }
 
-        return sliderId;
+        return slider;
     });
 };

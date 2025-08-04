@@ -19,9 +19,15 @@ export enum SliderLayoutTypeEnum {
     THUMBNAILS = "thumbnails",
 }
 
-export enum PlacementTypeEnum {
+export enum SliderPlacementTypeEnum {
     HOME = "hone",
     PRODUCT = "product",
+    COLLECTION = "collection",
+}
+
+export enum SliderStatusEnum {
+    ACTIVE = "active",
+    DRAFT = "draft",
 }
 
 export interface FilterOptionsType {
@@ -47,7 +53,10 @@ export interface VideoType {
 
 export interface SliderObjectType {
     title: string;
-    layoutType: SliderLayoutTypeEnum;
+    handle: string;
+    status: SliderStatusEnum;
+    layout: SliderLayoutTypeEnum;
+    placement: SliderPlacementTypeEnum;
     videosPerRow: string;
     slides: SlideType[];
 }
