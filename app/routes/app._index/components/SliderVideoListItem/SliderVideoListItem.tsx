@@ -98,7 +98,7 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                             encType: "application/json",
                         },
                     );
-                }, 5000);
+                }, 3000);
             }
         }
         if (fetcher.data?.data && !fetcher.data?.data.ok) {

@@ -20,7 +20,7 @@ export enum SliderLayoutTypeEnum {
 }
 
 export enum SliderPlacementTypeEnum {
-    HOME = "hone",
+    HOME = "home",
     PRODUCT = "product",
     COLLECTION = "collection",
 }

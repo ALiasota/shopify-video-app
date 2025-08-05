@@ -59,7 +59,7 @@ export const videosTable = pgTable("videos", {
 
 export const sliderLayoutTypeEnum = pgEnum("slider_layout_type", ["carousel", "stack", "single", "thumbnails"]);
 export const sliderStatusEnum = pgEnum("slider_status", ["active", "draft"]);
-export const sliderPlacementTypeEnum = pgEnum("slider_placement_type", ["hone", "product", "collection"]);
+export const sliderPlacementTypeEnum = pgEnum("slider_placement_type", ["home", "product", "collection"]);
 
 export const slidersTable = pgTable("sliders", {
     id: uuid("id").primaryKey().defaultRandom(),

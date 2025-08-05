@@ -77,7 +77,7 @@ export default function SliderVideoList({ videos, currencyCode, slides, updateSl
             }
         }
 
-        setListToDisplay(list);
+        setListToDisplay([...list, {}]);
     }, [videos, showFullList]);
 
     return (

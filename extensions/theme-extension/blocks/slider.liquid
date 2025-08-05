@@ -1,0 +1,99 @@
+<script>
+  window.GRODAS_SLIDER_METAFIELDS = {{ shop.metafields.custom.grodas_slider.value | json }};
+  window.PAGE_TYPE = "{{ request.page_type | default: template }}";
+</script>
+<link rel="stylesheet" href="{{ 'slider.css' | asset_url }}">
+{% assign sliders = shop.metafields.custom.grodas_slider.value | parse_json %}
+
+{% assign page_type = request.page_type | default: template %}
+
+{% if page_type == 'index' %}
+  {% assign current_slider = sliders | where: "placement", "home" | first %}
+{% elsif page_type == 'product' %}
+  {% assign current_slider = sliders | where: "placement", "product" | first %}
+{% elsif page_type == 'collection' %}
+  {% assign current_slider = sliders | where: "placement", "collection" | first %}
+{% endif %}
+
+{% if current_slider %}
+
+  {% assign visibleSlides = current_slider.videosPerRow %}
+  {% assign slidesCount = current_slider.slides | size %}
+  {% assign slideGap = 16 %}
+  {% assign totalGap = slideGap | times: visibleSlides | minus: slideGap %}
+  {% assign slideWidth = 'calc((100% - ' | append: totalGap | append: 'px) / ' | append: visibleSlides | append: ')' %}
+
+<script>
+  window.VISIBLE_SLIDES = {{ visibleSlides }};
+</script>
+
+<div>
+  <div class="slider-container">
+    <div class="slider">
+        {% if slidesCount > visibleSlides %}
+          <button class="slider-arrow slider-arrow--left">
+           &#10094;
+          </button>
+          <button class="slider-arrow slider-arrow--right">
+            &#10095;
+          </button>
+          <script src="{{ 'slider.js' | asset_url }}"></script>
+        {% endif %}
+      {% for slide in current_slider.slides %}
+        <div class="slide" style="flex: 0 0 {{ slideWidth }}; max-width: {{ slideWidth }};">
+          <video
+            src="{{ slide.videoUrl }}"
+            autoplay
+            loop
+            muted
+            playsinline
+            style="width:100%; height:260px; object-fit:cover; display:block;">
+          </video>
+          {% if slide.productHandle %}
+            {% assign product = all_products[slide.productHandle] %}
+            {% if product %}
+              <div class="slide-product-info-container">
+                <div class="slide-product-info">
+                  <img src="{{ product.featured_image | img_url: '120x120' }}" alt="{{ product.title }}" style="width:48px; height:48px; object-fit:cover; border-radius:8px;">
+                  <div class="text-container">
+                    <div>
+                      <div>
+                        {{ product.title | truncate: 12, "..." }}
+                      </div>
+                      <div>
+                        <span style="font-weight:600">
+                          {{ product.price | money }}
+                        </span>
+                        {% if product.compare_at_price > product.price %}
+                          <span style="text-decoration: line-through;">
+                            {{ product.compare_at_price | money }}
+                          </span>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div style="width:52px">
+                      <a href="{{ product.url }}" class="button">Shop now</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+             
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Grodas Slider",
+  "target": "section",
+  "settings": [
+  ]
+}
+{% endschema %}
+

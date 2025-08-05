@@ -1,3 +1,7 @@
 name = "theme-extension"
 type = "theme"
+[access]
+metafields = [
+  "custom.grodas_slider"
+]
 

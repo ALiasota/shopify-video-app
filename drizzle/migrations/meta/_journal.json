@@ -15,6 +15,13 @@
       "when": 1754297707010,
       "tag": "0001_update_sliders_table",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1754405036836,
+      "tag": "0002_fix_slider_placement_type",
+      "breakpoints": true
     }
   ]
 }

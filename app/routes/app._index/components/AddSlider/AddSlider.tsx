@@ -131,9 +131,7 @@ export default function AddSlider({ videos, currencyCode }: AddSliderProps) {
                                         />
                                     </Box>
 
-                                    {/* <Box> */}
                                     <Select options={statusOptions} value={sliderObject.status} onChange={(value) => updateSliderField("status", value as SliderStatusEnum)} label={"Status"} />
-                                    {/* </Box> */}
                                 </InlineStack>
                             </Box>
                             {(sliderObject.slides.length < minSlidesCount || sliderObject.slides.length >= maxSlidesCount) && stage === "slider" && (
