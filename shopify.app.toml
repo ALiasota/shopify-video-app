@@ -3,7 +3,7 @@
 client_id = "60ce8b60b01060a28f4c944056f0aabc"
 name = "video-app"
 handle = "video-app-15"
-application_url = "https://29fbdc7832b2.ngrok-free.app"
+application_url = "https://localhost:3458"
 embedded = true
 
 [build]
@@ -26,11 +26,7 @@ api_version = "2025-07"
 scopes = "write_products, read_files, write_files, read_themes"
 
 [auth]
-redirect_urls = [
-  "https://29fbdc7832b2.ngrok-free.app/auth/callback",
-  "https://29fbdc7832b2.ngrok-free.app/auth/shopify/callback",
-  "https://29fbdc7832b2.ngrok-free.app/api/auth/callback"
-]
+redirect_urls = ["https://localhost:3458/auth/callback", "https://localhost:3458/auth/shopify/callback", "https://localhost:3458/api/auth/callback"]
 
 [pos]
 embedded = false

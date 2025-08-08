@@ -6,6 +6,7 @@ export interface MetafieldSlider {
     layout: SliderLayoutTypeEnum;
     placement: SliderPlacementTypeEnum;
     videosPerRow: string;
+    autoScrollSeconds: string;
     slides: {
         videoUrl: string;
         productHandle?: string;

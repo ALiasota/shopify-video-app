@@ -1,9 +1,17 @@
 import { db } from "app/clients/db.server";
 import type { SliderStatusEnum } from "app/routes/app._index/components/types";
 
-export const getMerchantSliders = (merchantId: number, status: SliderStatusEnum) =>
-    db.query.slidersTable.findMany({
-        where: (slider, { eq, and }) => and(eq(slider.status, status), eq(slider.merchantId, merchantId)),
+export const getMerchantSliders = (merchantId: number, status?: SliderStatusEnum) => {
+    return db.query.slidersTable.findMany({
+        where: (slider, { eq, and }) => {
+            const conditions = [eq(slider.merchantId, merchantId)];
+
+            if (status) {
+                conditions.push(eq(slider.status, status));
+            }
+
+            return and(...conditions);
+        },
         with: {
             slides: {
                 with: {
@@ -15,3 +23,4 @@ export const getMerchantSliders = (merchantId: number, status: SliderStatusEnum)
             },
         },
     });
+};

@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     const videos = await getAllUploadedMerchantVideos(merchant.id);
 
-    return data({ ok: true, videos, currencyCode: merchant.currencyCode });
+    return data({ ok: true, videos, currencyCode: merchant.currencyCode, shop: merchant.shop });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -43,6 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 placement: sl.placement as SliderPlacementTypeEnum,
                 layout: sl.layout as SliderLayoutTypeEnum,
                 videosPerRow: sl.videosPerRow,
+                autoScrollSeconds: sl.autoScrollSeconds,
                 slides: sl.slides.map((slItem) => ({
                     videoUrl: slItem.video.videoUrl!,
                     productHandle: slItem.variant?.product.handle,
@@ -52,6 +53,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 placement: slider.placement,
                 layout: slider.layout,
                 videosPerRow: slider.videosPerRow,
+                autoScrollSeconds: slider.autoScrollSeconds,
                 slides: slider.slides.map((slItem) => ({
                     videoUrl: slItem.videoUrl,
                     productHandle: slItem.product?.handle,
@@ -78,7 +80,7 @@ export default function Index() {
     return (
         <>
             {currentTab === "start-page" && <StartPage />}
-            {currentTab === "add-slider" && <AddSlider currencyCode={data.currencyCode} videos={data.videos as unknown as VideoDB[]} />}
+            {currentTab === "add-slider" && <AddSlider currencyCode={data.currencyCode} videos={data.videos as unknown as VideoDB[]} shop={data.shop} />}
             {currentTab === "select-video" && <SelectVideoPage />}
         </>
     );

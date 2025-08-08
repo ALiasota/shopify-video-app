@@ -3,6 +3,7 @@
   window.PAGE_TYPE = "{{ request.page_type | default: template }}";
 </script>
 <link rel="stylesheet" href="{{ 'slider.css' | asset_url }}">
+
 {% assign sliders = shop.metafields.custom.grodas_slider.value | parse_json %}
 
 {% assign page_type = request.page_type | default: template %}
@@ -47,7 +48,7 @@
             loop
             muted
             playsinline
-            style="width:100%; height:260px; object-fit:cover; display:block;">
+            style="width:148px; height:264px; object-fit:cover; display:block;">
           </video>
           {% if slide.productHandle %}
             {% assign product = all_products[slide.productHandle] %}

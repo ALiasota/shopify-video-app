@@ -22,6 +22,13 @@
       "when": 1754405036836,
       "tag": "0002_fix_slider_placement_type",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1754658371044,
+      "tag": "0003_add_auto_scroll_seconds",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,6 @@
 import { BlockStack, Button, Checkbox, Grid, InlineStack } from "@shopify/polaris";
 import SliderVideoListItem from "../SliderVideoListItem/SliderVideoListItem";
 import { useEffect, useState } from "react";
-import SliderPreviewVideo from "../SliderPreviewVideo/SliderPreviewVideo";
 import type { VideoDB } from "drizzle/schema.server";
 import type { SliderObjectType, SlideType } from "../types";
 
@@ -12,17 +11,14 @@ interface ListItem {
 
 interface SliderVideoListProps {
     videos: Required<VideoDB>[];
-    currencyCode: string;
     slides: SlideType[];
     updateSliderField: <K extends keyof SliderObjectType>(field: K, value: SliderObjectType[K]) => void;
     maxSlidesCount: number;
-    minSlidesCount: number;
 }
 
-export default function SliderVideoList({ videos, currencyCode, slides, updateSliderField, maxSlidesCount, minSlidesCount }: SliderVideoListProps) {
+export default function SliderVideoList({ videos, slides, updateSliderField, maxSlidesCount }: SliderVideoListProps) {
     const [showFullList, setShowFullList] = useState(false);
     const [listToDisplay, setListToDisplay] = useState<ListItem[]>([]);
-    const [preview, setPreview] = useState<null | SlideType>(null);
 
     const onClickShowAll = () => {
         setShowFullList(true);
@@ -44,23 +40,10 @@ export default function SliderVideoList({ videos, currencyCode, slides, updateSl
             updatedSlides = [...updatedSlides, slide];
         }
         updateSliderField("slides", updatedSlides);
-
-        if (preview) setPreview(null);
     };
 
     const onClickRemove = () => {
         // setAllVideos(allVideos.filter((video) => !video.checked));
-    };
-
-    const onClickPreview = (id: string) => {
-        if (id === preview?.videoId) {
-            setPreview(null);
-        } else {
-            const previewItem = slides.find((item) => item.videoId === id);
-            const videoUrl = videos.find((video) => video.id === id)?.videoUrl as string;
-
-            setPreview(previewItem || { videoId: id, videoUrl });
-        }
     };
 
     useEffect(() => {
@@ -99,13 +82,11 @@ export default function SliderVideoList({ videos, currencyCode, slides, updateSl
                             moreVideosNumber={item.moreVideosNumber}
                             onClickShowAll={onClickShowAll}
                             onClickCheck={updateSlides}
-                            onClickPreview={onClickPreview}
                             checked={slides.some((slide) => slide.videoId === item.video?.id)}
                             disableAdd={slides.length >= maxSlidesCount}
                         />
                     ))}
                 </Grid>
-                {preview && <SliderPreviewVideo videos={videos} preview={preview} currencyCode={currencyCode} saveSlide={updateSlides} disableAdd={slides.length >= maxSlidesCount} />}
             </BlockStack>
         </>
     );

@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useFetcher } from "@remix-run/react";
-import { SaveBar, TitleBar, useAppBridge } from "@shopify/app-bridge-react";
+import { Modal, SaveBar, TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { Layout, Page, Text, Button, Card, Box, TextField, BlockStack, ButtonGroup, Banner, Select, InlineStack } from "@shopify/polaris";
 import { useEffect, useState } from "react";
 import SliderVideoList from "../SliderVideoList/SliderVideoList";
@@ -10,6 +10,7 @@ import { SliderLayoutTypeEnum, SliderPlacementTypeEnum, SliderStatusEnum } from 
 import type { VideoDB } from "drizzle/schema.server";
 import { AlertCircleIcon } from "@shopify/polaris-icons";
 import SliderPlacementSection from "../SliderPlacementSection/SliderPlacementSection";
+import SliderPreviewSection from "../SliderPreviewSection/SliderPreviewSection";
 
 const maxSlidesCount = 6;
 const minSlidesCount = 4;
@@ -26,15 +27,17 @@ const initSliderOject = {
     placement: SliderPlacementTypeEnum.HOME,
     layout: SliderLayoutTypeEnum.CAROUSEL,
     videosPerRow: "4",
+    autoScrollSeconds: "0",
     slides: [],
 };
 
 interface AddSliderProps {
     videos: VideoDB[];
     currencyCode: string;
+    shop: string;
 }
 
-export default function AddSlider({ videos, currencyCode }: AddSliderProps) {
+export default function AddSlider({ videos, currencyCode, shop }: AddSliderProps) {
     const [sliderObject, setSliderObject] = useState<SliderObjectType>(initSliderOject);
     const [stage, setStage] = useState<"start" | "slider">("start");
     const [disabled, setDisabled] = useState(true);
@@ -62,6 +65,7 @@ export default function AddSlider({ videos, currencyCode }: AddSliderProps) {
             layout: sliderObject.layout,
             placement: sliderObject.placement,
             videosPerRow: sliderObject.videosPerRow,
+            autoScrollSeconds: sliderObject.autoScrollSeconds,
             slides: JSON.stringify(sliderObject.slides),
         };
         try {
@@ -72,6 +76,10 @@ export default function AddSlider({ videos, currencyCode }: AddSliderProps) {
         } catch {
             shopify.toast.show("Error saving slider");
         }
+    };
+
+    const onCloseSaveModal = () => {
+        navigate("/app/sliders");
     };
 
     useEffect(() => {
@@ -91,9 +99,7 @@ export default function AddSlider({ videos, currencyCode }: AddSliderProps) {
     useEffect(() => {
         if (fetcher.data) {
             if (fetcher.data.data.ok) {
-                shopify.toast.show("Slider saved!");
-                params.set("tab", "start-page");
-                navigate(`?${params.toString()}`, { replace: true });
+                shopify.modal.show("save-modal");
                 shopify.saveBar.hide("slider-save-bar");
             } else {
                 shopify.toast.show(fetcher.data.data.message || "Error saving slider");
@@ -183,23 +189,29 @@ export default function AddSlider({ videos, currencyCode }: AddSliderProps) {
                                             </Text>
                                         </BlockStack>
                                     )}
-                                    {stage === "slider" && (
-                                        <SliderVideoList
-                                            currencyCode={currencyCode}
-                                            videos={videos}
-                                            slides={sliderObject.slides}
-                                            updateSliderField={updateSliderField}
-                                            maxSlidesCount={maxSlidesCount}
-                                            minSlidesCount={minSlidesCount}
-                                        />
-                                    )}
+                                    {stage === "slider" && <SliderVideoList videos={videos} slides={sliderObject.slides} updateSliderField={updateSliderField} maxSlidesCount={maxSlidesCount} />}
                                 </Box>
                             </BlockStack>
                         </Card>
                     </Layout.Section>
                     {stage === "slider" && (
                         <>
-                            <SliderLayoutSection updateSliderField={updateSliderField} selectedOption={sliderObject.layout} videosPerRow={sliderObject.videosPerRow} />
+                            {sliderObject.slides.length ? (
+                                <SliderPreviewSection
+                                    slides={sliderObject.slides}
+                                    videosPerRow={sliderObject.videosPerRow}
+                                    currencyCode={currencyCode}
+                                    updateSliderField={updateSliderField}
+                                    shop={shop}
+                                    autoScrollSeconds={Number(sliderObject.autoScrollSeconds)}
+                                />
+                            ) : null}
+                            <SliderLayoutSection
+                                updateSliderField={updateSliderField}
+                                selectedOption={sliderObject.layout}
+                                videosPerRow={sliderObject.videosPerRow}
+                                autoScrollSeconds={sliderObject.autoScrollSeconds}
+                            />
                             <SliderPlacementSection updateSliderField={updateSliderField} selectedPlacement={sliderObject.placement} />
                         </>
                     )}
@@ -213,6 +225,31 @@ export default function AddSlider({ videos, currencyCode }: AddSliderProps) {
                     </Layout.Section>
                 </Layout>
             </Page>
+
+            <Modal onHide={onCloseSaveModal} variant="base" id={"save-modal"}>
+                <Box padding="1000">
+                    <BlockStack gap="200">
+                        <Text as="span" variant="bodyMd" tone="inherit">
+                            To display the video slider on your store, you need to add the Video Slider app extension to your theme.
+                        </Text>
+                        <Box>
+                            <Button
+                                onClick={() => {
+                                    window.open(`https://${shop}/admin/themes/current/editor`, "_blank");
+                                }}
+                            >
+                                Go to theme editor
+                            </Button>
+                        </Box>
+                    </BlockStack>
+                </Box>
+
+                <TitleBar title="Variants">
+                    <button variant="primary" onClick={onCloseSaveModal}>
+                        Close
+                    </button>
+                </TitleBar>
+            </Modal>
         </>
     );
 }

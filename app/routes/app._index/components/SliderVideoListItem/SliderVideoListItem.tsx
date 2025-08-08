@@ -14,12 +14,11 @@ interface GridListItemProps {
     moreVideosNumber?: number;
     onClickShowAll: () => void;
     onClickCheck: (slide: SlideType) => void;
-    onClickPreview: (id: string) => void;
     checked: boolean;
     disableAdd: boolean;
 }
 
-export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, onClickPreview, checked, disableAdd }: GridListItemProps) {
+export default function SliderVideoListItem({ video, moreVideosNumber, onClickShowAll, onClickCheck, checked, disableAdd }: GridListItemProps) {
     const [focused, setFocused] = useState(false);
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -116,8 +115,6 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                     onClick={() => {
                         if (moreVideosNumber) {
                             onClickShowAll();
-                        } else if (video) {
-                            onClickPreview(video.id);
                         } else if (fileInputRef.current) {
                             fileInputRef.current.value = "";
                             fileInputRef.current.click();
@@ -127,7 +124,7 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        cursor: "pointer",
+                        cursor: !video || moreVideosNumber ? "pointer" : "default",
                         height: "140px",
                         backgroundColor: focused && video ? "#30303014" : "transparent",
                     }}
@@ -153,7 +150,6 @@ export default function SliderVideoListItem({ video, moreVideosNumber, onClickSh
                                         left: 0,
                                         width: "100%",
                                         height: "100%",
-                                        background: "rgba(0,0,0,0.22)",
                                         borderRadius: "8px",
                                         pointerEvents: "none",
                                         zIndex: 1,

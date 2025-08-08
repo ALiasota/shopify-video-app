@@ -30,6 +30,7 @@ export const createSlider = async (sliderObject: SliderObjectType, merchantId: n
                     placement: sliderObject.placement,
                     layout: sliderObject.layout,
                     videosPerRow: sliderObject.videosPerRow,
+                    autoScrollSeconds: sliderObject.autoScrollSeconds,
                 })
                 .returning()
         )[0];

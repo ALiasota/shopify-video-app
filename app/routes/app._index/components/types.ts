@@ -58,6 +58,7 @@ export interface SliderObjectType {
     layout: SliderLayoutTypeEnum;
     placement: SliderPlacementTypeEnum;
     videosPerRow: string;
+    autoScrollSeconds: string;
     slides: SlideType[];
 }
 

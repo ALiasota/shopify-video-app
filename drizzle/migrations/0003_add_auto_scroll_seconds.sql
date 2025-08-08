@@ -1,0 +1,1 @@
+ALTER TABLE "sliders" ADD COLUMN "auto_scroll_seconds" numeric NOT NULL;

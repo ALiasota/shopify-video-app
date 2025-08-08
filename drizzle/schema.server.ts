@@ -72,6 +72,7 @@ export const slidersTable = pgTable("sliders", {
     layout: sliderLayoutTypeEnum("layout").notNull(),
     placement: sliderPlacementTypeEnum("placement").notNull(),
     videosPerRow: decimal("videos_per_row").notNull(),
+    autoScrollSeconds: decimal("auto_scroll_seconds").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }),
 });
